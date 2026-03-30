@@ -84,6 +84,28 @@ export function defineComponent(name, options) {
                     }
                 });
                 
+                root.querySelectorAll(`[boolean-state="${attr}"]`).forEach(el => {
+                    if (typeof parsedValue === "boolean") 
+                        if (parsedValue) el.setAttribute(attr, "");
+                        else el.removeAttribute(attr);
+                });
+                
+                // Apply o-if conditional rendering
+                root.querySelectorAll(`[o-if="${attr}"]`).forEach(el => {
+                    // Validate that the value is a boolean
+                    if (typeof parsedValue !== "boolean") {
+                        console.error(
+                            `[oHTML o-if Error] Attribute "${attr}" used in o-if must be a boolean. ` +
+                            `Current value is ${typeof parsedValue}. ` +
+                            `Use the ":" prefix to enable JSON parsing (e.g., :${attr}="true")`
+                        );
+                        el.style.display = "none";
+                        return;
+                    }
+                    // Show or hide based on boolean value
+                    el.style.display = parsedValue ? "" : "none";
+                });
+                
                 // Get or create a data object on the component to store parsed values
                 if (!this._componentData) {
                     this._componentData = {};

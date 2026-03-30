@@ -146,10 +146,10 @@ The `:` prefix enables intelligent type parsing for attribute values. By default
 #### Supported Types:
 
 - **Numbers**: `:user-id="12345"` → `12345` (number)
-- **Booleans**: `:active="true"` → `true` (boolean) 
-- **Objects**: `:metadata="{\"role\": \"admin\"}"` → `{ role: "admin" }` (object)
-- **Arrays**: `:tags="[\"js\", \"html\"]"` → `["js", "html"]` (array)
 - **Strings** (without prefix): `user-name="John"` → `"John"` (string)
+- **Booleans**: `:active="true"` → `true` (boolean) 
+- **Arrays**: `:tags="[\"js\", \"html\"]"` → `["js", "html"]` (array)
+- **Objects**: `:metadata="{\"role\": \"admin\"}"` → `{ role: "admin" }` (object)
 
 #### Example:
 
@@ -210,3 +210,106 @@ const nameId = card.getData('name-id'); // "user-daniel"
 - **Error handling** - malformed JSON falls back to string with a warning
 - **Storage** - parsed values are stored internally in the component's `_componentData` object
 - **Accessibility** - use `getData(attrName)` method to retrieve parsed values programmatically
+
+---
+
+### Boolean State Provider
+
+The `boolean-state` provides a boolean value declared inline.
+
+#### Example:
+
+```html
+<template>
+    <div class="main-user-card">
+        <h1 data-bind="name" id-pointer="name-id" class-pointer="user-name"></h1>
+        <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
+        <p data-bind="logged" boolean-state="active" id-pointer="log"></p>
+    </div>
+</template>
+```
+
+---
+
+### If statement (Conditional Rendering)
+
+The `o-if` attribute enables conditional rendering of elements based on boolean values. Elements with `o-if` will only appear if the referenced attribute is `true`, and will be hidden if it's `false`.
+
+#### How it works:
+
+1. Add `o-if="attribute-name"` to elements inside your template
+2. Pass a **boolean** value via the component attribute using the `:` prefix (e.g., `:active="true"`)
+3. The element will be shown or hidden based on the boolean value
+4. If the referenced attribute is not a boolean, an error is logged and the element is hidden
+
+#### Important Rules:
+
+- ❌ **Must use `:` prefix** → `o-if` requires boolean values from JSON parsing
+- ❌ **No string booleans** → `active="true"` (without `:`) will cause an error
+- ✅ **Correct usage** → `:active="true"` (with `:` prefix)
+
+#### Example:
+
+**Template Definition:**
+```html
+<template id="user-card">
+    <div class="main-user-card">
+        <h2 data-bind="name" id-pointer="name-id"></h2>
+        <p data-bind="email" id-pointer="email-id"></p>
+        <!-- This element only shows if 'active' is true -->
+        <p data-bind="logged" o-if="active"></p>
+    </div>
+</template>
+```
+
+**Component Usage - CORRECT:**
+```html
+<!-- Element will be VISIBLE (active is true) -->
+<user-card 
+    name="Daniel Dias" 
+    email="daniel@gmail.com"
+    name-id="userName" 
+    :email-id="3223455" 
+    :active="true">
+</user-card>
+
+<!-- Element will be HIDDEN (active is false) -->
+<user-card 
+    name="Gabriel Dias" 
+    email="gabriel@gmail.com"
+    name-id="userName" 
+    :email-id="3223456" 
+    :active="false">
+</user-card>
+```
+
+**Component Usage - INCORRECT:**
+```html
+<!-- ❌ ERROR: 'active' is a string, not a boolean -->
+<!-- Console error will be logged -->
+<!-- Element will be hidden -->
+<user-card 
+    name="Rafael Braga" 
+    email="rafael@gmail.com"
+    name-id="userName" 
+    :email-id="3223457" 
+    active="true">  <!-- Missing : prefix! -->
+</user-card>
+```
+
+#### Error Message:
+
+If you forget the `:` prefix, you'll see this error:
+
+```
+[oHTML o-if Error] Attribute "active" used in o-if must be a boolean. 
+Current value is string. 
+Use the ":" prefix to enable JSON parsing (e.g., :active="true")
+```
+
+#### Key Points:
+
+- **Boolean-only** - `o-if` will reject non-boolean values with an error
+- **Hidden, not removed** - Elements are hidden with `display: none`, keeping the DOM structure intact
+- **Dynamic updates** - If the attribute changes, the visibility updates automatically
+- **Works with other bindings** - Can be combined with `data-bind`, `class-pointer`, `id-pointer`, etc. 

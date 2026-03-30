@@ -29,6 +29,7 @@
                 <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
                 <b><p data-bind="age" id-pointer="age-id" class-pointer="user-age"></p></b>
                 <p data-bind="bio" id-pointer="bio-id" class-pointer="user-bio"></p>
+                <p data-bind="logged" o-if="active" style="color: green; font-weight: bold;"></p>
             </div>
         </template>
 
@@ -49,6 +50,7 @@
                         email="Email: rafael@gmail.com" 
                         age="19 years old" 
                         bio="Computer Science student focused on software development and innovation"
+                        logged="✓ User is logged in"
                         user-name="user-name-style"
                         user-email="user-email-style"
                         user-age="user-age-style"
@@ -69,6 +71,7 @@
                         email="Email: john.doe@gmail.com"
                         age="25 years old"
                         bio="Software engineer with a passion for creating innovative solutions"
+                        logged="✓ User is logged in"
                         user-name="user-name-style"
                         user-email="user-email-style"
                         user-age="user-age-style"
@@ -76,8 +79,10 @@
                         name-id="user-john"
                         :email-id="789012"
                         age-id="age-john"
+                        active="false"  
                         :metadata="{\"role\": \"engineer\", \"level\": 5}">
                     </user-card>
+                    <!-- active without ':' prefix recives string value-->
                 </div>
                 <triple-div>
                     <p>This is another paragraph inside the triple-div.</p>

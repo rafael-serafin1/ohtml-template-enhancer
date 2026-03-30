@@ -26,6 +26,21 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
+     * ? boolean state 
+     * ! deprecated and marked for removal in the future
+     */
+    template.content.querySelectorAll('[boolean-state]').forEach((el) => {
+        const attr = el.getAttribute('boolean-state');
+        if (attr) binds.add(attr);
+    });
+    /**
+     * ? o-if conditional rendering attribute statement
+     */
+    template.content.querySelectorAll('[o-if]').forEach((el) => {
+        const attr = el.getAttribute('o-if');
+        if (attr) binds.add(attr);
+    });
+    /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
      */
     
