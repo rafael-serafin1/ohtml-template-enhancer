@@ -75,4 +75,16 @@ user-list li.user-item p {
     color: #666;
 }
 
+/* Badge Styles */
+badge span {
+    display: inline-block;
+}
+
+badge span span {
+    display: inline-block;
+    font-size: 0.875em;
+    font-weight: 500;
+}
+
+
 

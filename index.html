@@ -29,23 +29,29 @@
                 <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
                 <b><p data-bind="age" id-pointer="age-id" class-pointer="user-age"></p></b>
                 <p data-bind="bio" id-pointer="bio-id" class-pointer="user-bio"></p>
-                <p data-bind="logged" o-if="active" style="color: green; font-weight: bold;"></p>
+                <p data-bind="logged" o-if="active" attr-pointer="logged-data"></p>
             </div>
         </template>
 
         <template id="triple-div">
-            <div>
-                <div>
-                    <div>
+            <div attr-pointer="parent-div">
+                <div attr-pointer="child-div">
+                    <div attr-pointer="grandchild-div">
                         <slot></slot>
                     </div>
                 </div>
             </div>
         </template>
 
+        <template id="badge" data-use-shadow="false">
+            <span attr-pointer="badge-style">
+                <span data-bind="label"></span>
+            </span>
+        </template>
+
         <template id="user-list" data-use-shadow="false">
             <ul>
-                <li o-for="user in users" class="user-item">
+                <li o-for="user in users" class="user-item" attr-pointer="user.styling">
                     <h3 data-bind="user.name" style="margin: 0;"></h3>
                     <p data-bind="user.email" style="margin: 5px 0; color: #666;"></p>
                 </li>
@@ -67,10 +73,11 @@
                         name-id="user-rafael"
                         :email-id="123456"
                         age-id="age-rafael"
-                        :active="true">
+                        :active="true"
+                        :logged-data='{"style": "color: green; font-weight: bold;"}'>
                     </user-card>
                 </div>
-                <triple-div>
+                <triple-div parent-div="">
                     <p>This is a paragraph inside the triple-div.</p>
                 </triple-div>
             </section>
@@ -88,8 +95,7 @@
                         name-id="user-john"
                         :email-id="789012"
                         age-id="age-john"
-                        active="false"  
-                        :metadata="{\"role\": \"engineer\", \"level\": 5}">
+                        active="false"  >
                     </user-card>
                     <!-- active without ':' prefix recives string value-->
                     <!-- causes error -->
@@ -98,16 +104,39 @@
                     <p>This is another paragraph inside the triple-div.</p>
                 </triple-div>
             </section>
+
+            <!-- attr-pointer examples -->
+            <section>
+                <h2>Attribute pointer Examples</h2>
+                
+                <!-- Example 1: String format with style attribute -->
+                <div style="margin: 20px 0;">
+                    <h3>Example 1: String format with style</h3>
+                    <badge label="Info" badge-style="style='background-color: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
+                    <badge label="Success" badge-style="style='background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
+                    <badge label="Error" badge-style="style='background-color: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
+                </div>
+
+                <!-- Example 2: Object format with multiple attributes -->
+                <div style="margin: 20px 0;">
+                    <h3>Example 2: Object format with attributes</h3>
+                    <badge label="Primary" :badge-style='{"style": "background-color: #2563eb; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Primary action"}'></badge>
+                    <badge label="Secondary" :badge-style='{"style": "background-color: #6b7280; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Secondary action"}'></badge>
+                    <badge label="Warning" :badge-style='{"style": "background-color: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Warning message"}'></badge>
+                </div>
+            </section>
         </main>
 
         <!-- o-for usage example -->
         <div style="margin-top: 50px; padding: 20px; background: #f5f5f5;">
-            <h2>User List Example (o-for)</h2>
+            <h2>User List Example (using o-for and attr-pointer)</h2>
+            <!-- Example: Object format for attr-pointer with o-for -->
+            <h3>Dynamic attributes with o-for loop</h3>
             <user-list :users='[
-                {"name": "Rafael Engel", "email": "rafael@gmail.com"},
-                {"name": "Daniel Dias", "email": "daniel@gmail.com"},
-                {"name": "João Silva", "email": "joao@gmail.com"},
-                {"name": "Maria Santos", "email": "maria@gmail.com"}
+                {"name": "Rafael Engel", "email": "rafael@gmail.com", "styling": {"style": "color: #2563eb; font-weight: bold;", "title": "Full Stack Developer"}},
+                {"name": "Daniel Dias", "email": "daniel@gmail.com", "styling": {"style": "color: #dc2626; font-weight: bold;", "title": "Backend Developer"}},
+                {"name": "João Silva", "email": "joao@gmail.com", "styling": {"style": "color: #059669; font-weight: bold;", "title": "Frontend Developer"}},
+                {"name": "Maria Santos", "email": "maria@gmail.com", "styling": {"style": "color: #7c3aed; font-weight: bold;", "title": "QA Engineer"}}
             ]'></user-list>
         </div>
 
