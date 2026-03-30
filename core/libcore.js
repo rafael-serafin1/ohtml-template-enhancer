@@ -15,7 +15,7 @@ export function defineComponent(name, options) {
             const template = document.getElementById(templateId);
             if (!template) throw new Error(`oHTML couldn't find template: "${templateId}"`);
 
-            // clone do conteúdo da template
+            // clone template's content
             const content = template.content.cloneNode(true);
 
             if (useShadow) {
@@ -36,8 +36,16 @@ export function defineComponent(name, options) {
         applyAttributes(root) {
             observedAttributes.forEach(attr => {
                 const value = this.getAttribute(attr);
+                // Apply data-bind attributes
                 root.querySelectorAll(`[data-bind="${attr}"]`).forEach(el => {
                     el.textContent = value ?? "";
+                });
+                // Apply class-pointer attributes
+                root.querySelectorAll(`[class-pointer="${attr}"]`).forEach(el => {
+                    if (value) {
+                        // Clear previous dynamic classes and set new ones
+                        el.className = value;
+                    }
                 });
             });
         }

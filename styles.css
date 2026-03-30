@@ -30,3 +30,23 @@ user-card {
     padding: 10px;
 }
 
+.user-name-style {
+    font-weight: bold;
+    color: blue;
+}
+
+.user-email-style {
+    font-style: italic;
+    color: gray;
+}
+
+.user-age-style {
+    color: orange;
+    font-weight: 600;
+}
+
+.user-bio-style {
+    color: #555;
+    font-size: 0.9em;
+}
+

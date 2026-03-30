@@ -1,0 +1,14 @@
+# diretórios
+prompt/
+target/
+dist/
+node_modules/
+build/
+
+# arquivos
+*.lock
+*.log
+*.tmp
+*.txt
+*.bak
+*.cache

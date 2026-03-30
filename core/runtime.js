@@ -7,6 +7,11 @@ function getTemplateObservedAttributes(template) {
         const attr = el.getAttribute('data-bind');
         if (attr) binds.add(attr);
     });
+    // Also detect class-pointer attributes
+    template.content.querySelectorAll('[class-pointer]').forEach((el) => {
+        const attr = el.getAttribute('class-pointer');
+        if (attr) binds.add(attr);
+    });
     return [...binds];
 }
 

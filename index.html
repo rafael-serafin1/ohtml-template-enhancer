@@ -20,14 +20,15 @@
 
         <!-- template define a custom HTML tag -->
         <!-- template's id defines custom tag's name -->
-        <!-- data-bind attributes define data binding -->
         <!-- data-bind content will replace with bound data -->
-        <template id="user-card">
-            <div>
-                <h1 data-bind="name"></h1>
-                <p data-bind="email"></p>
-                <b><p data-bind="age"></p></b>
-                <p data-bind="bio"></p>
+        <!-- class-pointer allows dynamic class assignment from component attributes -->
+        <!-- data-use-shadow="false" is needed for external CSS classes to work -->
+        <template id="user-card" data-use-shadow="false">
+            <div class="main-user-card">
+                <h1 data-bind="name" class-pointer="user-name"></h1>
+                <p data-bind="email" class-pointer="user-email"></p>
+                <b><p data-bind="age" class-pointer="user-age"></p></b>
+                <p data-bind="bio" class-pointer="user-bio"></p>
             </div>
         </template>
 
@@ -44,8 +45,15 @@
         <main>
             <section>
                 <div>
-                    <user-card name="Rafael Engel Serafin" email="Email: rafael@gmail.com" age="19 years old" 
-                    bio="Computer Science student focused on software development and innovation"></user-card>
+                    <user-card name="Rafael Engel Serafin" 
+                        email="Email: rafael@gmail.com" 
+                        age="19 years old" 
+                        bio="Computer Science student focused on software development and innovation"
+                        user-name="user-name-style"
+                        user-email="user-email-style"
+                        user-age="user-age-style"
+                        user-bio="user-bio-style">
+                    </user-card>
                 </div>
                 <triple-div>
                     <p>This is a paragraph inside the triple-div.</p>
