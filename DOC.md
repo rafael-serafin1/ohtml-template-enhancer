@@ -406,3 +406,47 @@ o-for="itemName in arrayAttributeName"
 - **No Indices** - Current version does not provide item index (planned feature)
 - **Data-use-shadow** - Recommended to set `data-use-shadow="false"` for better CSS integration
 - **Error Handling** - Non-array values will log an error and skip rendering 
+
+---
+
+### Dynamic Attributes Assignment with `prop-pointer`
+
+The `prop-pointer` attribute enables dynamic attribute assignment.
+
+#### How it works:
+
+1. Add `prop-pointer="pointer-name"` to elements inside your template
+2. Pass attributes through component attributes using the pointer name
+3. Attributes will be applied dynamically to the corresponding elements
+
+#### Example:
+
+**Template Definition:**
+```html
+<template id="user-card">
+    <div class="main-user-card">
+        <h2 data-bind="name" prop-pointer="name-"></h2>
+        <p data-bind="email" prop-pointer="email-"></p>
+    </div>
+</template>
+```
+
+**Component Usage:**
+```html
+<user-card 
+    name="Daniel Dias" 
+    email="daniel@gmail.com"
+    name-='style="color: blue; font-weight: lightweld;"'
+    email-='[
+      {style="color: green; font-style: italic;"}
+      {}
+    ]'>
+</user-card>
+```
+
+#### Key Differences:
+
+- **`id`** → Static, immutable. Applied once to all instances.
+- **`id-pointer`** → Dynamic, mutable per instance. 
+
+This feature is designed to work seamlessly with **data-bind** attributes, enabling both content and styling flexibility.

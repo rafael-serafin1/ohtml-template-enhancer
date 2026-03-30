@@ -47,9 +47,14 @@ function getTemplateObservedAttributes(template) {
         const attr = el.getAttribute('show-switch');
         if (attr) binds.add(attr);
     });
-    
     /**
-     * TODO: prop-pointer for passing attributes directly to child components (e.g., <child-component prop-pointer="parentData">)
+     * ? prop-pointer for passing attributes directly to child components (e.g., <child-component prop-pointer="parentData">)
+     */
+    template.content.querySelectorAll('[prop-pointer]').forEach((el) => {
+        const attr = el.getAttribute('prop-pointer');
+        if (attr) binds.add(attr);
+    });
+    /**
      * TODO: o-on event directive for attaching event listeners directly in the template (e.g., o-on:click="handleClick")
      */
 

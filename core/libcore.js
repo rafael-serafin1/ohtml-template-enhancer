@@ -98,6 +98,7 @@ export function defineComponent(name, options) {
                     if (typeof parsedValue === "boolean") 
                         if (parsedValue) el.setAttribute(attr, "");
                         else el.removeAttribute(attr);
+                        console.warn("[oHTML Warning] boolean-state is a deprecated directive and will be removed soon. Try using o-if instead.");
                 });
                 
                 // Apply o-if conditional rendering
@@ -117,6 +118,7 @@ export function defineComponent(name, options) {
                     else el.style.display = ""; // Ensure it's visible if true (in case it was hidden by default)
                 });
 
+                // Apply show-switch directive 
                 root.querySelectorAll(`[show-switch="${attr}"]`).forEach(el => {
                     if (typeof parsedValue !== "boolean") {
                         console.error(
@@ -129,6 +131,13 @@ export function defineComponent(name, options) {
                     }
                     
                     el.style.display = parsedValue ? "" : "none";
+                });
+
+                // Apply prop-pointer directive to dynamically set attributes on elements
+                root.querySelectorAll(`[prop-pointer="${attr}"]`).forEach(el => {
+                    if (parsedValue) {
+                        this._applyDynamicAttributes(el, parsedValue);
+                    } 
                 });
                 
                 // Get or create a data object on the component to store parsed values
@@ -247,6 +256,20 @@ export function defineComponent(name, options) {
                     }
                 }
             });
+
+            // Process prop-pointer attributes
+            element.querySelectorAll('[prop-pointer]').forEach(el => {
+                const pointerAttr = el.getAttribute('prop-pointer');
+                
+                // Check if it references the item (e.g., "item.attrs")
+                if (pointerAttr.startsWith(itemName + '.')) {
+                    const property = pointerAttr.substring((itemName + '.').length);
+                    const value = this._getNestedProperty(itemData, property);
+                    if (value) {
+                        this._applyDynamicAttributes(el, value);
+                    }
+                }
+            });
         }
 
         /**
@@ -254,6 +277,68 @@ export function defineComponent(name, options) {
          */
         _getNestedProperty(obj, path) {
             return path.split('.').reduce((current, prop) => current?.[prop], obj);
+        }
+
+        /**
+         * Apply dynamic attributes to an element based on prop-pointer directives
+         * Handles both string format (e.g., "style='color: red;'") and array of objects format
+         * @param {HTMLElement} element - The element to apply attributes to
+         * @param {string|Array|Object} value - The attribute definition(s)
+         */
+        _applyDynamicAttributes(element, value) {
+            let attributesToApply = {};
+
+            if (typeof value === 'string') {
+                // Parse string format: "style='color: red;' class='highlight'"
+                attributesToApply = this._parseAttributeString(value);
+            } else if (Array.isArray(value)) {
+                // Merge all objects in the array
+                value.forEach(item => {
+                    if (typeof item === 'object' && item !== null) {
+                        Object.assign(attributesToApply, item);
+                    }
+                });
+            } else if (typeof value === 'object' && value !== null) {
+                // Single object format
+                attributesToApply = value;
+            }
+
+            // Apply all attributes to the element
+            Object.entries(attributesToApply).forEach(([attrName, attrValue]) => {
+                if (attrName === 'style' && typeof attrValue === 'string') {
+                    // Special handling for style attribute
+                    element.style.cssText = attrValue;
+                } else {
+                    element.setAttribute(attrName, String(attrValue));
+                }
+            });
+        }
+
+        /**
+         * Parse attribute string format: "style='color: red;' title='User name'"
+         * Handles both single and double quoted values, including CSS values with semicolons
+         * @param {string} attrString - The attribute string to parse
+         * @returns {Object} Object with parsed attributes
+         */
+        _parseAttributeString(attrString) {
+            const attributes = {};
+            
+            // Match patterns: name="value" (double quotes)
+            const doubleQuoteRegex = /(\w+)="([^"]*)"/g;
+            let match;
+            
+            while ((match = doubleQuoteRegex.exec(attrString)) !== null) {
+                attributes[match[1]] = match[2];
+            }
+            
+            // Match patterns: name='value' (single quotes)
+            const singleQuoteRegex = /(\w+)='([^']*)'/g;
+            
+            while ((match = singleQuoteRegex.exec(attrString)) !== null) {
+                attributes[match[1]] = match[2];
+            }
+            
+            return attributes;
         }
     }
 
