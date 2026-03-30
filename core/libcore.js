@@ -323,18 +323,12 @@ export function defineComponent(name, options) {
         _parseAttributeString(attrString) {
             const attributes = {};
             
-            // Match patterns: name="value" (double quotes)
-            const doubleQuoteRegex = /(\w+)="([^"]*)"/g;
+            // Match patterns like: attr="value" or attr='value'
+            // This regex handles CSS with semicolons and special characters
+            const attrRegex = /(\w+)=["']([^"']*)["']/g;
             let match;
             
-            while ((match = doubleQuoteRegex.exec(attrString)) !== null) {
-                attributes[match[1]] = match[2];
-            }
-            
-            // Match patterns: name='value' (single quotes)
-            const singleQuoteRegex = /(\w+)='([^']*)'/g;
-            
-            while ((match = singleQuoteRegex.exec(attrString)) !== null) {
+            while ((match = attrRegex.exec(attrString)) !== null) {
                 attributes[match[1]] = match[2];
             }
             

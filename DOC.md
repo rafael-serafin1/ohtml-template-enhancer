@@ -411,13 +411,121 @@ o-for="itemName in arrayAttributeName"
 
 ### Dynamic Attributes Assignment with `attr-pointer`
 
-The `attr-pointer` attribute enables dynamic attribute assignment.
+The `attr-pointer` attribute enables dynamic attribute assignment to elements. This allows you to pass HTML attributes (style, class, title, data-*, etc.) dynamically from component attributes.
 
 #### How it works:
 
 1. Add `attr-pointer="pointer-name"` to elements inside your template
 2. Pass attributes through component attributes using the pointer name
-3. Attributes will be applied dynamically to the corresponding elements
+3. Attributes are applied dynamically to the corresponding elements
+
+#### Supported Formats:
+
+**Format 1: String with attribute pairs**
+```html
+<!-- Pass multiple attributes as a string -->
+attr-name="style='color: red; font-weight: bold;' title='User name' data-id='123'"
+```
+
+**Format 2: Array of attribute objects (with `:` prefix)**
+```html
+<!-- Pass attributes as array of objects (requires JSON parsing with : prefix) -->
+:attr-name='[
+    {"style": "color: red; font-weight: bold;"},
+    {"title": "User name"},
+    {"data-id": "123"}
+]'
+```
+
+**Format 3: Single object (with `:` prefix)**
+```html
+<!-- Pass attributes as single object (requires JSON parsing with : prefix) -->
+:attr-name='{"style": "color: red;", "title": "User name"}'
+```
+
+#### Example:
+
+**Template Definition:**
+```html
+<template id="user-card" data-use-shadow="false">
+    <div class="user-item">
+        <h2 data-bind="name" attr-pointer="name-attrs"></h2>
+        <p data-bind="email" attr-pointer="email-attrs"></p>
+    </div>
+</template>
+```
+
+**Component Usage - String Format:**
+```html
+<user-card 
+    name="Rafael" 
+    email="rafael@gmail.com"
+    name-attrs="style='color: gold; font-weight: bold;' title='User name'"
+    email-attrs="style='color: gray; font-style: italic;' title='Email address'">
+</user-card>
+```
+
+**Component Usage - Array Format:**
+```html
+<user-card 
+    name="Daniel" 
+    email="daniel@gmail.com"
+    :name-attrs='[
+        {"style": "color: blue; font-weight: bold;"},
+        {"title": "User name"},
+        {"data-type": "full-name"}
+    ]'
+    :email-attrs='[
+        {"style": "color: gray;"},
+        {"title": "Email address"}
+    ]'>
+</user-card>
+```
+
+#### With `o-for` (List Rendering):
+
+```html
+<template id="user-list" data-use-shadow="false">
+    <ul>
+        <li o-for="user in users">
+            <h3 data-bind="user.name" attr-pointer="user.nameAttrs"></h3>
+            <p data-bind="user.email" attr-pointer="user.emailAttrs"></p>
+        </li>
+    </ul>
+</template>
+
+<!-- Pass objects with attributes for each user -->
+<user-list :users='[
+    {
+        "name": "Rafael",
+        "email": "rafael@gmail.com",
+        "nameAttrs": {"style": "color: blue;", "title": "Developer"},
+        "emailAttrs": {"style": "color: gray;"}
+    },
+    {
+        "name": "Daniel",
+        "email": "daniel@gmail.com",
+        "nameAttrs": {"style": "color: green;", "title": "Designer"},
+        "emailAttrs": {"style": "color: gray;"}
+    }
+]'></user-list>
+```
+
+#### Special Handling:
+
+- **Style Attribute** - The `style` attribute is special-cased to use `cssText` for better CSS string parsing
+- **Other Attributes** - All other attributes are set using `setAttribute()`
+- **Data Attributes** - Works with custom `data-*` attributes
+- **Boolean Attributes** - Any non-empty value is set as the attribute value
+
+#### Key Points:
+
+- **Flexible Format** - Choose between string, object, or array format depending on your needs
+- **Special Style Handling** - `style` attributes are applied via `cssText` for better CSS support
+- **Type Safety** - Use `:` prefix for objects/arrays to enable JSON parsing
+- **Direct Attributes** - Perfect for setting `title`, `aria-*`, `data-*` attributes dynamically
+- **Works with o-for** - Can reference nested properties like `item.attrs` inside loops
+- **CSS Classes** - For dynamic classes, prefer `class-pointer` over `attr-pointer` for better semantics
 
 #### Example:
 
@@ -437,16 +545,11 @@ The `attr-pointer` attribute enables dynamic attribute assignment.
     name="Daniel Dias" 
     email="daniel@gmail.com"
     name-='style="color: blue; font-weight: lightweld;"'
-    email-='[
+    :email-='[
       {style="color: green; font-style: italic;"}
-      {}
+      {title="User email"}
     ]'>
 </user-card>
 ```
 
-#### Key Differences:
-
-- **`id`** → Static, immutable. Applied once to all instances.
-- **`id-pointer`** → Dynamic, mutable per instance. 
-
-This feature is designed to work seamlessly with **data-bind** attributes, enabling both content and styling flexibility.
+--- 
