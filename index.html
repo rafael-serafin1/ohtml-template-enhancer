@@ -31,12 +31,25 @@
             </div>
         </template>
 
+        <template id="triple-div">
+            <div>
+                <div>
+                    <div>
+                        <slot></slot>
+                    </div>
+                </div>
+            </div>
+        </template>
+
         <main>
             <section>
                 <div>
                     <user-card name="Rafael Engel Serafin" email="Email: rafael@gmail.com" age="19 years old" 
                     bio="Computer Science student focused on software development and innovation"></user-card>
                 </div>
+                <triple-div>
+                    <p>This is a paragraph inside the triple-div.</p>
+                </triple-div>
             </section>
         </main>
 

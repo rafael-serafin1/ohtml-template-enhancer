@@ -15,16 +15,18 @@ export function defineComponent(name, options) {
             const template = document.getElementById(templateId);
             if (!template) throw new Error(`oHTML couldn't find template: "${templateId}"`);
 
+            // clone do conteúdo da template
             const content = template.content.cloneNode(true);
 
             if (useShadow) {
-                if (!this.shadowRoot) {
-                    this.attachShadow({ mode: "open" });
-                }
+                if (!this.shadowRoot) this.attachShadow({ mode: "open" });
                 this.shadowRoot.innerHTML = "";
                 this.shadowRoot.appendChild(content);
+
+                // aplica data-bind
                 this.applyAttributes(this.shadowRoot);
             } else {
+                // sem Shadow DOM, precisamos de um slot "manual"
                 this.innerHTML = "";
                 this.appendChild(content);
                 this.applyAttributes(this);

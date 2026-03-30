@@ -42,3 +42,24 @@ Use the custom tag in your HTML:
 ```html
 <user-card name="Daniel" email="daniel@gmail.com"></user-card>
 ```
+
+### Alternative usage:
+
+```html 
+<template id="triple-div">
+  <div>
+    <div>
+      <div>
+        <slot></slot> <!-- mandatory tag -->
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+using it:
+```html
+<triple-div>
+  <p>This paragraph is inside of 3 div's.</p>
+</triple-div>
+```
