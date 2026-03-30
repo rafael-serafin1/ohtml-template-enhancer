@@ -1,0 +1,44 @@
+<!-- This is a simple oHTML framework usage -->
+<!-- Creativity is the limit                -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <!-- import oHTML framework core -->
+        <!-- must be module type         -->
+        <script type="module" src="core/runtime.js"></script>
+
+        <!-- sample model - 
+        <user-card name="<h2></h2>" email="<p></p>"> </user-card> 
+        -->
+
+        <!-- template define a custom HTML tag -->
+        <!-- template's id defines custom tag's name -->
+        <!-- data-bind attributes define data binding -->
+        <!-- data-bind content will replace with bound data -->
+        <template id="user-card">
+            <div class="wrapper">
+                <h1 data-bind="name"></h1>
+                <p data-bind="email"></p>
+                <p data-bind="age"></p>
+                <p data-bind="bio"></p>
+            </div>
+        </template>
+
+        <main>
+            <section>
+                <div>
+                    <user-card name="Rafael Engel Serafin" email="rafael@gmail.com" age="19 years old" 
+                    bio="Computer Science student focused on software development and innovation"></user-card>
+                </div>
+            </section>
+        </main>
+
+    </body>
+</html>
