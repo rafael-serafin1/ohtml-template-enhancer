@@ -1,5 +1,6 @@
 import "./define.js";
 import { defineComponent } from "./libcore.js";
+import { getCleanAttributeNames } from "./parsing.js";
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
@@ -27,7 +28,11 @@ function getTemplateObservedAttributes(template) {
     /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
      */
-    return [...binds];
+    
+    // get clean attribute names (remove : prefix for observation)
+    const cleanBinnds = getCleanAttributeNames(binds);
+    
+    return [...cleanBinnds];
 }
 
 function registerTemplateComponents() {

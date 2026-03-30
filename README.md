@@ -1,9 +1,6 @@
-## Mini HTML Framework
+## HTML Template Enhancer
 
-A **mini HTML framework** that enables the creation of **custom tags** easily and efficiently using:
-```html 
-<template>
-```
+***oHTML***, a minimal HTML templating layer that eliminates the need for build tools by enabling reusable, component-based structures directly in HTML, reducing complexity in static site development.
 
 ---
 
@@ -16,12 +13,14 @@ A **mini HTML framework** that enables the creation of **custom tags** easily an
 
 ---
 
-### Installation
+### How to use it
 
-Include the framework script in your project:
+Clone oHTML repository:<br />
+*git clone https://github.com/rafael-serafin1/ohtml-mini-template enhancer*
 
+On your HTML file:
 ```html
-<script type="module" src="ohtml-framework/core/runtime.js"></script>
+<script type="module" src="ohtml-mini-template enhancer/core/runtime.js"></script>
 ```
 
 ---
@@ -64,53 +63,3 @@ using it:
   <p>This paragraph is inside of 3 div's.</p>
 </triple-div>
 ```
-
----
-
-### Dynamic Class Assignment with `class-pointer`
-
-The `class-pointer` attribute enables dynamic CSS class assignment, making it perfect for integrating with **TailwindCSS** and other utility-based CSS frameworks. This allows you to define different styles for the same component in different use cases.
-
-#### How it works:
-
-1. Add `class-pointer="pointer-name"` to elements inside your template
-2. Pass classes through component attributes using the pointer name
-3. Classes will be applied dynamically to the corresponding elements
-
-#### Example with TailwindCSS:
-
-**Template Definition:**
-```html
-<template id="user-card">
-    <div class="main-user-card">
-        <h2 data-bind="name" class-pointer="user-name"></h2>
-        <p data-bind="email" class-pointer="user-email"></p>
-    </div>
-</template>
-```
-
-**Component Usage:**
-```html
-<!-- First card with blue heading and light gray text -->
-<user-card 
-    name="Daniel Dias" 
-    email="daniel@gmail.com"
-    user-name="font-bold text-blue-300"
-    user-email="text-gray-200 font-light">
-</user-card>
-
-<!-- Same component with different styles -->
-<user-card 
-    name="John Smith" 
-    email="john@gmail.com"
-    user-name="font-semibold text-green-400"
-    user-email="text-white">
-</user-card>
-```
-
-#### Key Differences:
-
-- **`class`** → Static, immutable. Applied once to all instances.
-- **`class-pointer`** → Dynamic, mutable per instance. Allows unique styling for each component usage.
-
-This feature is designed to work seamlessly with **data-bind** attributes, enabling both content and styling flexibility.

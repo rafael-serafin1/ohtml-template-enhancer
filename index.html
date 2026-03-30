@@ -1,4 +1,4 @@
-<!-- This is a simple oHTML framework usage -->
+<!-- This is a simple oHTML template enhancer usage -->
 <!-- Creativity is the limit                -->
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,7 @@
     </head>
 
     <body>
-        <!-- import oHTML framework core -->
+        <!-- import oHTML template enhancer core -->
         <!-- must be module type         -->
         <script type="module" src="core/runtime.js"></script>
 
@@ -53,10 +53,10 @@
                         user-email="user-email-style"
                         user-age="user-age-style"
                         user-bio="user-bio-style"
-                        name-id="name-id-1"
-                        email-id="email-id-1"
-                        age-id="age-id-1"
-                        bio-id="bio-id-1">
+                        name-id="user-rafael"
+                        :email-id="123456"
+                        age-id="age-rafael"
+                        :active="true">
                     </user-card>
                 </div>
                 <triple-div>
@@ -66,13 +66,17 @@
             <section>
                 <div>
                     <user-card name="John Doe"
-                    email="Email: john.doe@gmail.com"
-                    age="25 years old"
+                        email="Email: john.doe@gmail.com"
+                        age="25 years old"
                         bio="Software engineer with a passion for creating innovative solutions"
                         user-name="user-name-style"
                         user-email="user-email-style"
                         user-age="user-age-style"
-                        user-bio="user-bio-style">
+                        user-bio="user-bio-style"
+                        name-id="user-john"
+                        :email-id="789012"
+                        age-id="age-john"
+                        :metadata="{\"role\": \"engineer\", \"level\": 5}">
                     </user-card>
                 </div>
                 <triple-div>
