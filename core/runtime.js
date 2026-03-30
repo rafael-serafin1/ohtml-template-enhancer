@@ -3,15 +3,30 @@ import { defineComponent } from "./libcore.js";
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
+    /**
+     * ? data binding
+     */
     template.content.querySelectorAll('[data-bind]').forEach((el) => {
         const attr = el.getAttribute('data-bind');
         if (attr) binds.add(attr);
     });
-    // Also detect class-pointer attributes
+    /**
+     * ? class assignment
+     */
     template.content.querySelectorAll('[class-pointer]').forEach((el) => {
         const attr = el.getAttribute('class-pointer');
         if (attr) binds.add(attr);
     });
+    /**
+     * ? id assignment
+     */
+    template.content.querySelectorAll('[id-pointer]').forEach((el) => {
+        const attr = el.getAttribute('id-pointer');
+        if (attr) binds.add(attr);
+    });
+    /**
+     * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
+     */
     return [...binds];
 }
 

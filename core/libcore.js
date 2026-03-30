@@ -43,10 +43,16 @@ export function defineComponent(name, options) {
                 // Apply class-pointer attributes
                 root.querySelectorAll(`[class-pointer="${attr}"]`).forEach(el => {
                     if (value) {
-                        // Clear previous dynamic classes and set new ones
                         el.className = value;
                     }
                 });
+                // Apply id-pointer attributes
+                root.querySelectorAll(`[id-pointer="${attr}"]`).forEach(el => {
+                    if (value) {
+                        el.id = value;
+                    }
+                });
+                // Other bindings can be applied here in the future, just remember to add them in the getTemplateObservedAttributes function as well
             });
         }
     }

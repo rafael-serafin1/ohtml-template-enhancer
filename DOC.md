@@ -57,8 +57,8 @@ On usage:
 ```html
 <template id="user-card" data-use-shadow="false">
     <div class="main-content-user-card">
-        <h2 data-bind="name"></h2>
-        <p data-bind="email"></p>
+        <h2 data-bind="name" class-pointer="user-name"></h2>
+        <p data-bind="email" class-pointer="user-email"></p>
     </div>
 </template>
 ```
@@ -69,5 +69,26 @@ On usage:
     user-name="user-name-display" user-email="user-email-display"></user-card>
 ```
 
-***be careful!*** -- `data-use-shadow` must be ***false*** so that you can use external CSS.
+***be careful!*** -- `data-use-shadow` must be ***false*** so that you can use external CSS.<br />
 Otherwise use `<style>` inside `<template>` for inline styling.
+
+---
+
+### Id Pointers
+
+`id-pointer` allows dynaic id assignment by component attributes. For example:
+
+```html
+<template id="user-card" data-use-shadow="false">
+    <div class="main-content-user-card">
+        <h2 data-bind="name" id-pointer="name-id"></h2>
+        <p data-bind="email" id-pointer="email-id"></p>
+    </div>
+</template>
+```
+
+On usage:
+```html
+    <user-card name="Daniel Dias" email="danieldias@email.com"
+    name-id="userName" email-id="userEmail"></user-card>
+```

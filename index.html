@@ -25,10 +25,10 @@
         <!-- data-use-shadow="false" is needed for external CSS classes to work -->
         <template id="user-card" data-use-shadow="false">
             <div class="main-user-card">
-                <h1 data-bind="name" class-pointer="user-name"></h1>
-                <p data-bind="email" class-pointer="user-email"></p>
-                <b><p data-bind="age" class-pointer="user-age"></p></b>
-                <p data-bind="bio" class-pointer="user-bio"></p>
+                <h1 data-bind="name" id-pointer="name-id" class-pointer="user-name"></h1>
+                <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
+                <b><p data-bind="age" id-pointer="age-id" class-pointer="user-age"></p></b>
+                <p data-bind="bio" id-pointer="bio-id" class-pointer="user-bio"></p>
             </div>
         </template>
 
@@ -52,11 +52,31 @@
                         user-name="user-name-style"
                         user-email="user-email-style"
                         user-age="user-age-style"
-                        user-bio="user-bio-style">
+                        user-bio="user-bio-style"
+                        name-id="name-id-1"
+                        email-id="email-id-1"
+                        age-id="age-id-1"
+                        bio-id="bio-id-1">
                     </user-card>
                 </div>
                 <triple-div>
                     <p>This is a paragraph inside the triple-div.</p>
+                </triple-div>
+            </section>
+            <section>
+                <div>
+                    <user-card name="John Doe"
+                    email="Email: john.doe@gmail.com"
+                    age="25 years old"
+                        bio="Software engineer with a passion for creating innovative solutions"
+                        user-name="user-name-style"
+                        user-email="user-email-style"
+                        user-age="user-age-style"
+                        user-bio="user-bio-style">
+                    </user-card>
+                </div>
+                <triple-div>
+                    <p>This is another paragraph inside the triple-div.</p>
                 </triple-div>
             </section>
         </main>
