@@ -23,10 +23,10 @@ export function defineComponent(name, options) {
                 this.shadowRoot.innerHTML = "";
                 this.shadowRoot.appendChild(content);
 
-                // aplica data-bind
+                // apply data-bind
                 this.applyAttributes(this.shadowRoot);
             } else {
-                // sem Shadow DOM, precisamos de um slot "manual"
+                // without Shadow DOM, manual slot is needed
                 this.innerHTML = "";
                 this.appendChild(content);
                 this.applyAttributes(this);

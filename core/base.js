@@ -16,7 +16,7 @@ export class BaseComponent extends HTMLElement {
     render() {}
 
     /**
-     * @returns {string[]} Lista de atributos observados para re-renderização
+     * @returns {string[]} List of attributes observed for re-rendering
      */
     static get observedAttributes() {
         return [];

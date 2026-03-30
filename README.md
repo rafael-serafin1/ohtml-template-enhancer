@@ -7,7 +7,7 @@ A **mini HTML framework** that enables the creation of **custom tags** easily an
 
 ---
 
-## Features
+### Features
 
 - Create **custom elements** without any external dependencies.  
 - Supports **HTML templates** to define the structure of your custom tags.  
@@ -16,7 +16,7 @@ A **mini HTML framework** that enables the creation of **custom tags** easily an
 
 ---
 
-## Installation
+### Installation
 
 Include the framework script in your project:
 
@@ -26,7 +26,7 @@ Include the framework script in your project:
 
 ---
 
-## Basic Usage
+### Basic Usage
 
 Define a `<template>` in your HTML:
 ```html
@@ -42,6 +42,7 @@ Use the custom tag in your HTML:
 ```html
 <user-card name="Daniel" email="daniel@gmail.com"></user-card>
 ```
+---
 
 ### Alternative usage:
 
