@@ -312,4 +312,97 @@ Use the ":" prefix to enable JSON parsing (e.g., :active="true")
 - **Boolean-only** - `o-if` will reject non-boolean values with an error
 - **Hidden, not removed** - Elements are hidden with `display: none`, keeping the DOM structure intact
 - **Dynamic updates** - If the attribute changes, the visibility updates automatically
-- **Works with other bindings** - Can be combined with `data-bind`, `class-pointer`, `id-pointer`, etc. 
+- **Works with other bindings** - Can be combined with `data-bind`, `class-pointer`, `id-pointer`, etc.
+
+---
+
+### List Rendering with `o-for`
+
+The `o-for` attribute enables rendering of lists by iterating over arrays. Similar to Vue's `v-for` or Angular's `*ngFor`, it allows you to render multiple elements dynamically based on array data.
+
+#### How it works:
+
+1. Add `o-for="item in arrayName"` to an element in your template
+2. Pass an array through a component attribute using JSON parsing (`:` prefix)
+3. The element is cloned for each item in the array
+4. Inside the loop, reference item properties with `item.property` syntax
+
+#### Syntax:
+
+```
+o-for="itemName in arrayAttributeName"
+```
+
+- **itemName** - Variable name for the current item in the loop
+- **arrayAttributeName** - The component attribute containing the array data
+- Must use `:` prefix when passing the array (e.g., `:users="[...]"`)
+
+#### Example:
+
+**Template Definition:**
+```html
+<template id="user-list" data-use-shadow="false">
+    <ul>
+        <li o-for="user in users">
+            <h3 data-bind="user.name"></h3>
+            <p data-bind="user.email"></p>
+        </li>
+    </ul>
+</template>
+```
+
+**Component Usage:**
+```html
+<user-list :users='[
+    {"name": "Rafael", "email": "rafael@gmail.com"},
+    {"name": "Daniel", "email": "daniel@gmail.com"},
+    {"name": "João", "email": "joao@gmail.com"}
+]'></user-list>
+```
+
+#### Features:
+
+- **Property Access** - Use dot notation for nested properties: `user.name`, `user.profile.email`
+- **Works with Bindings** - Combine with `data-bind`, `class-pointer`, `id-pointer`
+- **Dynamic** - Array updates trigger re-rendering
+- **Cloning** - Original element structure is preserved and cloned for each item
+
+#### Advanced Example:
+
+```html
+<template id="product-list" data-use-shadow="false">
+    <div class="products">
+        <article o-for="product in items" class-pointer="product.category">
+            <h4 data-bind="product.name"></h4>
+            <p data-bind="product.description"></p>
+            <span data-bind="product.price" id-pointer="product.id"></span>
+        </article>
+    </div>
+</template>
+
+<!-- Usage with object properties -->
+<product-list :items='[
+    {
+        "id": 1,
+        "name": "Laptop",
+        "description": "High performance laptop",
+        "category": "electronics",
+        "price": "$999"
+    },
+    {
+        "id": 2,
+        "name": "Mouse",
+        "description": "Wireless mouse",
+        "category": "accessories",
+        "price": "$29"
+    }
+]'></product-list>
+```
+
+#### Key Points:
+
+- **Array Required** - `o-for` only works with array values passed via `:` prefix (JSON parsing)
+- **Proper Nesting** - Reference nested properties with dot notation (e.g., `user.address.city`)
+- **No Indices** - Current version does not provide item index (planned feature)
+- **Data-use-shadow** - Recommended to set `data-use-shadow="false"` for better CSS integration
+- **Error Handling** - Non-array values will log an error and skip rendering 

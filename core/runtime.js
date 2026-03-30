@@ -41,6 +41,24 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
+     * TODO: o-for loop directive (similar to Vue's v-for) for rendering lists based on array data
+     * TODO: prop-pointer for passing attributes directly to child components (e.g., <child-component prop-pointer="parentData">)
+     * TODO: o-on event directive for attaching event listeners directly in the template (e.g., o-on:click="handleClick")
+     * TODO: show-switch hide content if value is false, show content if value is true (similar to o-if but without the need for display:none, it would actually add/remove the element from the DOM)
+     */ 
+    /**
+     * ? o-for loop directive (similar to Vue's v-for) for rendering lists based on array data
+     */
+    template.content.querySelectorAll('[o-for]').forEach((el) => {
+        const attr = el.getAttribute('o-for');
+        if (attr && attr.includes(' in ')) {
+            // Extract array name from "item in arrayName"
+            const [itemName, arrayName] = attr.split(' in ').map(s => s.trim());
+            binds.add(`${itemName} in ${arrayName}`);
+            binds.add(arrayName); // Also add the array name to observe it
+        }
+    });
+    /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
      */
     

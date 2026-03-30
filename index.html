@@ -43,6 +43,15 @@
             </div>
         </template>
 
+        <template id="user-list" data-use-shadow="false">
+            <ul>
+                <li o-for="user in users" class="user-item">
+                    <h3 data-bind="user.name" style="margin: 0;"></h3>
+                    <p data-bind="user.email" style="margin: 5px 0; color: #666;"></p>
+                </li>
+            </ul>
+        </template>
+
         <main>
             <section>
                 <div>
@@ -89,6 +98,17 @@
                 </triple-div>
             </section>
         </main>
+
+        <!-- o-for usage example -->
+        <div style="margin-top: 50px; padding: 20px; background: #f5f5f5;">
+            <h2>User List Example (o-for)</h2>
+            <user-list :users='[
+                {"name": "Rafael Engel", "email": "rafael@gmail.com"},
+                {"name": "Daniel Dias", "email": "daniel@gmail.com"},
+                {"name": "João Silva", "email": "joao@gmail.com"},
+                {"name": "Maria Santos", "email": "maria@gmail.com"}
+            ]'></user-list>
+        </div>
 
     </body>
 </html>
