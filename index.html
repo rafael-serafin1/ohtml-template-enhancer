@@ -29,14 +29,14 @@
                 <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
                 <b><p data-bind="age" id-pointer="age-id" class-pointer="user-age"></p></b>
                 <p data-bind="bio" id-pointer="bio-id" class-pointer="user-bio"></p>
-                <p data-bind="logged" o-if="active" prop-pointer="logged-data"></p>
+                <p data-bind="logged" o-if="active" attr-pointer="logged-data"></p>
             </div>
         </template>
 
         <template id="triple-div">
-            <div prop-pointer="parent-div">
-                <div prop-pointer="child-div">
-                    <div prop-pointer="grandchild-div">
+            <div attr-pointer="parent-div">
+                <div attr-pointer="child-div">
+                    <div attr-pointer="grandchild-div">
                         <slot></slot>
                     </div>
                 </div>
@@ -44,14 +44,14 @@
         </template>
 
         <template id="badge" data-use-shadow="false">
-            <span prop-pointer="badge-style">
+            <span attr-pointer="badge-style">
                 <span data-bind="label"></span>
             </span>
         </template>
 
         <template id="user-list" data-use-shadow="false">
             <ul>
-                <li o-for="user in users" class="user-item" prop-pointer="user.styling">
+                <li o-for="user in users" class="user-item" attr-pointer="user.styling">
                     <h3 data-bind="user.name" style="margin: 0;"></h3>
                     <p data-bind="user.email" style="margin: 5px 0; color: #666;"></p>
                 </li>
@@ -95,8 +95,7 @@
                         name-id="user-john"
                         :email-id="789012"
                         age-id="age-john"
-                        active="false"  
-                        :metadata="{\"role\": \"engineer\", \"level\": 5}">
+                        active="false"  >
                     </user-card>
                     <!-- active without ':' prefix recives string value-->
                     <!-- causes error -->
@@ -106,9 +105,9 @@
                 </triple-div>
             </section>
 
-            <!-- prop-pointer examples -->
+            <!-- attr-pointer examples -->
             <section>
-                <h2>prop-pointer Examples</h2>
+                <h2>Attribute pointer Examples</h2>
                 
                 <!-- Example 1: String format with style attribute -->
                 <div style="margin: 20px 0;">
@@ -130,8 +129,8 @@
 
         <!-- o-for usage example -->
         <div style="margin-top: 50px; padding: 20px; background: #f5f5f5;">
-            <h2>User List Example (o-for with prop-pointer)</h2>
-            <!-- Example 1: String format for prop-pointer -->
+            <h2>User List Example (using o-for)</h2>
+            <!-- Example 1: String format for attr-pointer -->
             <h3>Example 1: Dynamic styling with string format</h3>
             <user-list :users='[
                 {"name": "Rafael Engel", "email": "rafael@gmail.com", "styling": "style=\"color: #2563eb; font-weight: bold;\""},
@@ -140,7 +139,7 @@
                 {"name": "Maria Santos", "email": "maria@gmail.com", "styling": "style=\"color: #7c3aed; font-weight: bold;\""}
             ]'></user-list>
             
-            <!-- Example 2: Object format for prop-pointer -->
+            <!-- Example 2: Object format for attr-pointer -->
             <h3 style="margin-top: 30px;">Example 2: Dynamic attributes with object format</h3>
             <user-list :users='[
                 {"name": "Alice Johnson", "email": "alice@gmail.com", "styling": {"style": "color: #f59e0b; font-weight: bold;", "title": "Senior Developer"}},

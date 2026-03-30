@@ -409,13 +409,13 @@ o-for="itemName in arrayAttributeName"
 
 ---
 
-### Dynamic Attributes Assignment with `prop-pointer`
+### Dynamic Attributes Assignment with `attr-pointer`
 
-The `prop-pointer` attribute enables dynamic attribute assignment.
+The `attr-pointer` attribute enables dynamic attribute assignment.
 
 #### How it works:
 
-1. Add `prop-pointer="pointer-name"` to elements inside your template
+1. Add `attr-pointer="pointer-name"` to elements inside your template
 2. Pass attributes through component attributes using the pointer name
 3. Attributes will be applied dynamically to the corresponding elements
 
@@ -425,8 +425,8 @@ The `prop-pointer` attribute enables dynamic attribute assignment.
 ```html
 <template id="user-card">
     <div class="main-user-card">
-        <h2 data-bind="name" prop-pointer="name-"></h2>
-        <p data-bind="email" prop-pointer="email-"></p>
+        <h2 data-bind="name" attr-pointer="name-"></h2>
+        <p data-bind="email" attr-pointer="email-"></p>
     </div>
 </template>
 ```

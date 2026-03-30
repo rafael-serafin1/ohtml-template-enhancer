@@ -133,8 +133,8 @@ export function defineComponent(name, options) {
                     el.style.display = parsedValue ? "" : "none";
                 });
 
-                // Apply prop-pointer directive to dynamically set attributes on elements
-                root.querySelectorAll(`[prop-pointer="${attr}"]`).forEach(el => {
+                // Apply attr-pointer directive to dynamically set attributes on elements
+                root.querySelectorAll(`[attr-pointer="${attr}"]`).forEach(el => {
                     if (parsedValue) {
                         this._applyDynamicAttributes(el, parsedValue);
                     } 
@@ -257,9 +257,9 @@ export function defineComponent(name, options) {
                 }
             });
 
-            // Process prop-pointer attributes
-            element.querySelectorAll('[prop-pointer]').forEach(el => {
-                const pointerAttr = el.getAttribute('prop-pointer');
+            // Process attr-pointer attributes
+            element.querySelectorAll('[attr-pointer]').forEach(el => {
+                const pointerAttr = el.getAttribute('attr-pointer');
                 
                 // Check if it references the item (e.g., "item.attrs")
                 if (pointerAttr.startsWith(itemName + '.')) {
@@ -280,7 +280,7 @@ export function defineComponent(name, options) {
         }
 
         /**
-         * Apply dynamic attributes to an element based on prop-pointer directives
+         * Apply dynamic attributes to an element based on attr-pointer directives
          * Handles both string format (e.g., "style='color: red;'") and array of objects format
          * @param {HTMLElement} element - The element to apply attributes to
          * @param {string|Array|Object} value - The attribute definition(s)

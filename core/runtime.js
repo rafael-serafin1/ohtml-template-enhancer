@@ -48,10 +48,10 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
-     * ? prop-pointer for passing attributes directly to child components (e.g., <child-component prop-pointer="parentData">)
+     * ? attr-pointer for passing attributes directly to child components (e.g., <child-component attr-pointer="parentData">)
      */
-    template.content.querySelectorAll('[prop-pointer]').forEach((el) => {
-        const attr = el.getAttribute('prop-pointer');
+    template.content.querySelectorAll('[attr-pointer]').forEach((el) => {
+        const attr = el.getAttribute('attr-pointer');
         if (attr) binds.add(attr);
     });
     /**
