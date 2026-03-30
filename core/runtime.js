@@ -34,18 +34,25 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
-     * ? o-if conditional rendering attribute statement
+     * ? o-if conditional rendering attribute statement (deletes element if false)
      */
     template.content.querySelectorAll('[o-if]').forEach((el) => {
         const attr = el.getAttribute('o-if');
         if (attr) binds.add(attr);
     });
     /**
-     * TODO: o-for loop directive (similar to Vue's v-for) for rendering lists based on array data
+     *  ? show-switch directive (hiddes element if false)
+     */
+    template.content.querySelectorAll('[show-switch]').forEach((el) => {
+        const attr = el.getAttribute('show-switch');
+        if (attr) binds.add(attr);
+    });
+    
+    /**
      * TODO: prop-pointer for passing attributes directly to child components (e.g., <child-component prop-pointer="parentData">)
      * TODO: o-on event directive for attaching event listeners directly in the template (e.g., o-on:click="handleClick")
-     * TODO: show-switch hide content if value is false, show content if value is true (similar to o-if but without the need for display:none, it would actually add/remove the element from the DOM)
-     */ 
+     */
+
     /**
      * ? o-for loop directive (similar to Vue's v-for) for rendering lists based on array data
      */
@@ -58,6 +65,7 @@ function getTemplateObservedAttributes(template) {
             binds.add(arrayName); // Also add the array name to observe it
         }
     });
+
     /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
      */

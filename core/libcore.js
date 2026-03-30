@@ -109,10 +109,25 @@ export function defineComponent(name, options) {
                             `Current value is ${typeof parsedValue}. ` +
                             `Use the ":" prefix to enable JSON parsing (e.g., :${attr}="true")`
                         );
+                        el.remove(); 
+                        return;
+                    }
+                    
+                    if (!parsedValue) el.remove();
+                    else el.style.display = ""; // Ensure it's visible if true (in case it was hidden by default)
+                });
+
+                root.querySelectorAll(`[show-switch="${attr}"]`).forEach(el => {
+                    if (typeof parsedValue !== "boolean") {
+                        console.error(
+                            `[oHTML o-if Error] Attribute "${attr}" used in o-if must be a boolean. ` +
+                            `Current value is ${typeof parsedValue}. ` +
+                            `Use the ":" prefix to enable JSON parsing (e.g., :${attr}="true")`
+                        );
                         el.style.display = "none";
                         return;
                     }
-                    // Show or hide based on boolean value
+                    
                     el.style.display = parsedValue ? "" : "none";
                 });
                 
