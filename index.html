@@ -23,10 +23,10 @@
         <!-- data-bind attributes define data binding -->
         <!-- data-bind content will replace with bound data -->
         <template id="user-card">
-            <div class="wrapper">
+            <div>
                 <h1 data-bind="name"></h1>
                 <p data-bind="email"></p>
-                <p data-bind="age"></p>
+                <b><p data-bind="age"></p></b>
                 <p data-bind="bio"></p>
             </div>
         </template>
@@ -34,7 +34,7 @@
         <main>
             <section>
                 <div>
-                    <user-card name="Rafael Engel Serafin" email="rafael@gmail.com" age="19 years old" 
+                    <user-card name="Rafael Engel Serafin" email="Email: rafael@gmail.com" age="19 years old" 
                     bio="Computer Science student focused on software development and innovation"></user-card>
                 </div>
             </section>

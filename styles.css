@@ -26,11 +26,7 @@ div {
     gap: 10px;
 }
 
-.wrapper {
-    border: 1px solid #ccc;
+user-card {
     padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
 }
 
