@@ -55,8 +55,9 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
-     * TODO: o-on event directive for attaching event listeners directly in the template (e.g., o-on:click="handleClick")
+     * ? o-when event directive for attaching event listeners to the component (e.g., o-when:click="handleClick")
      */
+    // Note: o-when attributes are detected on the component element itself, not in templates
 
     /**
      * ? o-for loop directive (similar to Vue's v-for) for rendering lists based on array data
