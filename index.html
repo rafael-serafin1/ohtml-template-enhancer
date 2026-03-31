@@ -25,28 +25,17 @@
         <!-- data-use-shadow="false" is needed for external CSS classes to work -->
         <template id="user-card" data-use-shadow="false">
             <div class="main-user-card">
-                <h1 data-bind="name" id-pointer="name-id" class-pointer="user-name"></h1>
-                <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
-                <b><p data-bind="age" id-pointer="age-id" class-pointer="user-age"></p></b>
-                <p data-bind="bio" id-pointer="bio-id" class-pointer="user-bio"></p>
-                <p data-bind="logged" o-if="active" attr-pointer="logged-data"></p>
+                <h1 data-bind="name" id-pointer="name-id" attr-pointer="name-style, name-title"></h1>
+                <p data-bind="email" id-pointer="email-id" attr-pointer="email-style, email-title"></p>
+                <b><p data-bind="age" id-pointer="age-id" attr-pointer="age-style"></p></b>
+                <p data-bind="bio" id-pointer="bio-id" attr-pointer="bio-style"></p>
             </div>
         </template>
 
         <template id="triple-div">
-            <div attr-pointer="parent-div">
-                <div attr-pointer="child-div">
-                    <div attr-pointer="grandchild-div">
-                        <slot></slot>
-                    </div>
-                </div>
+            <div>
+                <slot></slot>
             </div>
-        </template>
-
-        <template id="badge" data-use-shadow="false">
-            <span attr-pointer="badge-style">
-                <span data-bind="label"></span>
-            </span>
         </template>
 
         <template id="user-list" data-use-shadow="false">
@@ -61,68 +50,34 @@
         <main>
             <section>
                 <div>
-                    <user-card name="Rafael Engel Serafin" 
-                        email="Email: rafael@gmail.com" 
+                    <user-card 
+                        name="Rafael Engel Serafin" 
+                        email="rafael@gmail.com" 
                         age="19 years old" 
-                        bio="Computer Science student focused on software development and innovation"
-                        logged="✓ User is logged in"
-                        user-name="user-name-style"
-                        user-email="user-email-style"
-                        user-age="user-age-style"
-                        user-bio="user-bio-style"
-                        name-id="user-rafael"
-                        :email-id="123456"
-                        age-id="age-rafael"
-                        :active="true"
-                        :logged-data='{"style": "color: green; font-weight: bold;"}'>
+                        bio="Computer Science student"
+                        name-style="color: #2563eb; font-weight: bold;"
+                        name-title="Full Stack Developer"
+                        email-style="color: #10b981; font-weight: bold;"
+                        email-title="Email do usuário"
+                        age-style="color: #f59e0b;"
+                        bio-style="color: #666; font-size: 14px;">
                     </user-card>
                 </div>
-                <triple-div parent-div="">
-                    <p>This is a paragraph inside the triple-div.</p>
-                </triple-div>
             </section>
             <section>
                 <div>
-                    <user-card name="John Doe"
-                        email="Email: john.doe@gmail.com"
+                    <user-card 
+                        name="John Doe"
+                        email="john.doe@gmail.com"
                         age="25 years old"
-                        bio="Software engineer with a passion for creating innovative solutions"
-                        logged="✓ User is logged in"
-                        user-name="user-name-style"
-                        user-email="user-email-style"
-                        user-age="user-age-style"
-                        user-bio="user-bio-style"
-                        name-id="user-john"
-                        :email-id="789012"
-                        age-id="age-john"
-                        active="false"  >
+                        bio="Software engineer with passion for innovation"
+                        name-style="color: #dc2626; font-weight: bold;"
+                        name-title="Backend Developer"
+                        email-style="color: #7c3aed; font-style: italic;"
+                        email-title="Email do desenvolvedor"
+                        age-style="color: #059669;"
+                        bio-style="color: #666; font-size: 14px;">
                     </user-card>
-                    <!-- active without ':' prefix recives string value-->
-                    <!-- causes error -->
-                </div>
-                <triple-div>
-                    <p>This is another paragraph inside the triple-div.</p>
-                </triple-div>
-            </section>
-
-            <!-- attr-pointer examples -->
-            <section>
-                <h2>Attribute pointer Examples</h2>
-                
-                <!-- Example 1: String format with style attribute -->
-                <div style="margin: 20px 0;">
-                    <h3>Example 1: String format with style</h3>
-                    <badge label="Info" badge-style="style='background-color: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
-                    <badge label="Success" badge-style="style='background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
-                    <badge label="Error" badge-style="style='background-color: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;'"></badge>
-                </div>
-
-                <!-- Example 2: Object format with multiple attributes -->
-                <div style="margin: 20px 0;">
-                    <h3>Example 2: Object format with attributes</h3>
-                    <badge label="Primary" :badge-style='{"style": "background-color: #2563eb; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Primary action"}'></badge>
-                    <badge label="Secondary" :badge-style='{"style": "background-color: #6b7280; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Secondary action"}'></badge>
-                    <badge label="Warning" :badge-style='{"style": "background-color: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;", "title": "Warning message"}'></badge>
                 </div>
             </section>
         </main>

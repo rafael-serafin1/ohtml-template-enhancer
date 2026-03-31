@@ -1,7 +1,5 @@
 ## oHTML Template Enhancer
 
----
-
 ### How to create your custom tag
 
 Using `<template>`
@@ -415,33 +413,9 @@ The `attr-pointer` attribute enables dynamic attribute assignment to elements. T
 
 #### How it works:
 
-1. Add `attr-pointer="pointer-name"` to elements inside your template
+1. Add `attr-pointer="pointername-PROP"` to elements inside your template
 2. Pass attributes through component attributes using the pointer name
 3. Attributes are applied dynamically to the corresponding elements
-
-#### Supported Formats:
-
-**Format 1: String with attribute pairs**
-```html
-<!-- Pass multiple attributes as a string -->
-attr-name="style='color: red; font-weight: bold;' title='User name' data-id='123'"
-```
-
-**Format 2: Array of attribute objects (with `:` prefix)**
-```html
-<!-- Pass attributes as array of objects (requires JSON parsing with : prefix) -->
-:attr-name='[
-    {"style": "color: red; font-weight: bold;"},
-    {"title": "User name"},
-    {"data-id": "123"}
-]'
-```
-
-**Format 3: Single object (with `:` prefix)**
-```html
-<!-- Pass attributes as single object (requires JSON parsing with : prefix) -->
-:attr-name='{"style": "color: red;", "title": "User name"}'
-```
 
 #### Example:
 
@@ -449,8 +423,8 @@ attr-name="style='color: red; font-weight: bold;' title='User name' data-id='123
 ```html
 <template id="user-card" data-use-shadow="false">
     <div class="user-item">
-        <h2 data-bind="name" attr-pointer="name-attrs"></h2>
-        <p data-bind="email" attr-pointer="email-attrs"></p>
+        <h2 data-bind="name" attr-pointer="name-style, name-title"></h2>
+        <p data-bind="email" attr-pointer="email-style, email-title"></p>
     </div>
 </template>
 ```
@@ -460,63 +434,12 @@ attr-name="style='color: red; font-weight: bold;' title='User name' data-id='123
 <user-card 
     name="Rafael" 
     email="rafael@gmail.com"
-    name-attrs="style='color: gold; font-weight: bold;' title='User name'"
-    email-attrs="style='color: gray; font-style: italic;' title='Email address'">
+    :name-style="style='color: gold; font-weight: bold;' title='User name'"
+    name-title="Software Developer"
+    :email-style="style='color: gray; font-style: italic;' title='Email address'"
+    email-title="User email adress">
 </user-card>
 ```
-
-**Component Usage - Array Format:**
-```html
-<user-card 
-    name="Daniel" 
-    email="daniel@gmail.com"
-    :name-attrs='[
-        {"style": "color: blue; font-weight: bold;"},
-        {"title": "User name"},
-        {"data-type": "full-name"}
-    ]'
-    :email-attrs='[
-        {"style": "color: gray;"},
-        {"title": "Email address"}
-    ]'>
-</user-card>
-```
-
-#### With `o-for` (List Rendering):
-
-```html
-<template id="user-list" data-use-shadow="false">
-    <ul>
-        <li o-for="user in users">
-            <h3 data-bind="user.name" attr-pointer="user.nameAttrs"></h3>
-            <p data-bind="user.email" attr-pointer="user.emailAttrs"></p>
-        </li>
-    </ul>
-</template>
-
-<!-- Pass objects with attributes for each user -->
-<user-list :users='[
-    {
-        "name": "Rafael",
-        "email": "rafael@gmail.com",
-        "nameAttrs": {"style": "color: blue;", "title": "Developer"},
-        "emailAttrs": {"style": "color: gray;"}
-    },
-    {
-        "name": "Daniel",
-        "email": "daniel@gmail.com",
-        "nameAttrs": {"style": "color: green;", "title": "Designer"},
-        "emailAttrs": {"style": "color: gray;"}
-    }
-]'></user-list>
-```
-
-#### Special Handling:
-
-- **Style Attribute** - The `style` attribute is special-cased to use `cssText` for better CSS string parsing
-- **Other Attributes** - All other attributes are set using `setAttribute()`
-- **Data Attributes** - Works with custom `data-*` attributes
-- **Boolean Attributes** - Any non-empty value is set as the attribute value
 
 #### Key Points:
 
@@ -526,30 +449,5 @@ attr-name="style='color: red; font-weight: bold;' title='User name' data-id='123
 - **Direct Attributes** - Perfect for setting `title`, `aria-*`, `data-*` attributes dynamically
 - **Works with o-for** - Can reference nested properties like `item.attrs` inside loops
 - **CSS Classes** - For dynamic classes, prefer `class-pointer` over `attr-pointer` for better semantics
-
-#### Example:
-
-**Template Definition:**
-```html
-<template id="user-card">
-    <div class="main-user-card">
-        <h2 data-bind="name" attr-pointer="name-"></h2>
-        <p data-bind="email" attr-pointer="email-"></p>
-    </div>
-</template>
-```
-
-**Component Usage:**
-```html
-<user-card 
-    name="Daniel Dias" 
-    email="daniel@gmail.com"
-    name-='style="color: blue; font-weight: lightweld;"'
-    :email-='[
-      {style="color: green; font-style: italic;"}
-      {title="User email"}
-    ]'>
-</user-card>
-```
 
 --- 

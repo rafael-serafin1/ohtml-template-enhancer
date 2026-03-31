@@ -132,19 +132,66 @@ export function defineComponent(name, options) {
                     
                     el.style.display = parsedValue ? "" : "none";
                 });
-
-                // Apply attr-pointer directive to dynamically set attributes on elements
-                root.querySelectorAll(`[attr-pointer="${attr}"]`).forEach(el => {
-                    if (parsedValue) {
-                        this._applyDynamicAttributes(el, parsedValue);
-                    } 
-                });
                 
                 // Get or create a data object on the component to store parsed values
                 if (!this._componentData) {
                     this._componentData = {};
                 }
                 this._componentData[attr] = parsedValue;
+            });
+
+            // Third pass: handle attr-pointer attributes dynamically
+            this._applyAttrPointers(root);
+        }
+
+        /**
+         * Apply attr-pointer attributes dynamically
+         * Syntax: attr-pointer="style-name, title-name, class-name"
+         * Maps component attributes to element attributes based on suffix
+         */
+        _applyAttrPointers(root) {
+            root.querySelectorAll('[attr-pointer]').forEach(el => {
+                const pointerList = el.getAttribute('attr-pointer');
+                if (!pointerList) return;
+
+                // Split by comma and process each pointer
+                const pointerNames = pointerList.split(',').map(s => s.trim());
+                
+                pointerNames.forEach(pointerName => {
+                    // Try to get attribute from component (check both prefixed and non-prefixed)
+                    const prefixedName = `:${pointerName}`;
+                    let rawValue;
+                    
+                    if (this.hasAttribute(prefixedName)) {
+                        rawValue = this.getAttribute(prefixedName);
+                    } else {
+                        rawValue = this.getAttribute(pointerName);
+                    }
+                    
+                    if (rawValue === null) return;
+                    
+                    // Parse the value if prefixed
+                    const { value: parsedValue } = parseAttribute(
+                        this.hasAttribute(prefixedName) ? prefixedName : pointerName,
+                        rawValue
+                    );
+                    
+                    // Extract the attribute name from the last part of pointerName
+                    // e.g., "name-style" -> "style", "email-title" -> "title"
+                    const parts = pointerName.split('-');
+                    const attrName = parts[parts.length - 1]; // Get the last part
+                    
+                    // Apply the attribute based on its type
+                    if (attrName === 'style' && typeof parsedValue === 'string') {
+                        el.style.cssText = parsedValue;
+                    } else if (attrName === 'class' && typeof parsedValue === 'string') {
+                        el.className = parsedValue;
+                    } else if (attrName === 'id' && typeof parsedValue === 'string') {
+                        el.id = parsedValue;
+                    } else {
+                        el.setAttribute(attrName, String(parsedValue));
+                    }
+                });
             });
         }
 
@@ -217,58 +264,73 @@ export function defineComponent(name, options) {
          * Process data-bind attributes for items in o-for loop
          */
         _processItemBindings(element, itemName, itemData) {
-            // Process data-bind attributes
-            element.querySelectorAll('[data-bind]').forEach(el => {
+            // Helper function to process directives  
+            const processElement = (el) => {
+                // Process data-bind attributes
                 const bindAttr = el.getAttribute('data-bind');
-                
-                // Check if it references the item (e.g., "item.name")
-                if (bindAttr.startsWith(itemName + '.')) {
+                if (bindAttr && bindAttr.startsWith(itemName + '.')) {
                     const property = bindAttr.substring((itemName + '.').length);
                     const value = this._getNestedProperty(itemData, property);
                     el.textContent = value ?? "";
                 }
-            });
 
-            // Process class-pointer attributes
-            element.querySelectorAll('[class-pointer]').forEach(el => {
-                const pointerAttr = el.getAttribute('class-pointer');
-                
-                // Check if it references the item (e.g., "item.className")
-                if (pointerAttr.startsWith(itemName + '.')) {
-                    const property = pointerAttr.substring((itemName + '.').length);
+                // Process class-pointer attributes
+                const classPointerAttr = el.getAttribute('class-pointer');
+                if (classPointerAttr && classPointerAttr.startsWith(itemName + '.')) {
+                    const property = classPointerAttr.substring((itemName + '.').length);
                     const value = this._getNestedProperty(itemData, property);
                     if (value) {
                         el.className = String(value);
                     }
                 }
-            });
 
-            // Process id-pointer attributes
-            element.querySelectorAll('[id-pointer]').forEach(el => {
-                const pointerAttr = el.getAttribute('id-pointer');
-                
-                // Check if it references the item (e.g., "item.id")
-                if (pointerAttr.startsWith(itemName + '.')) {
-                    const property = pointerAttr.substring((itemName + '.').length);
+                // Process id-pointer attributes
+                const idPointerAttr = el.getAttribute('id-pointer');
+                if (idPointerAttr && idPointerAttr.startsWith(itemName + '.')) {
+                    const property = idPointerAttr.substring((itemName + '.').length);
                     const value = this._getNestedProperty(itemData, property);
                     if (value) {
                         el.id = String(value);
                     }
                 }
-            });
 
-            // Process attr-pointer attributes
-            element.querySelectorAll('[attr-pointer]').forEach(el => {
-                const pointerAttr = el.getAttribute('attr-pointer');
-                
-                // Check if it references the item (e.g., "item.attrs")
-                if (pointerAttr.startsWith(itemName + '.')) {
-                    const property = pointerAttr.substring((itemName + '.').length);
-                    const value = this._getNestedProperty(itemData, property);
-                    if (value) {
-                        this._applyDynamicAttributes(el, value);
-                    }
+                // Process attr-pointer attributes
+                const attrPointerAttr = el.getAttribute('attr-pointer');
+                if (attrPointerAttr) {
+                    const pointerNames = attrPointerAttr.split(',').map(s => s.trim());
+                    
+                    pointerNames.forEach(pointerName => {
+                        // Check if pointer references item data (e.g., "item.styling")
+                        if (pointerName.startsWith(itemName + '.')) {
+                            const property = pointerName.substring((itemName + '.').length);
+                            const value = this._getNestedProperty(itemData, property);
+                            
+                            if (value) {
+                                // For loop items, the value is the attribute data
+                                const parts = pointerName.split('-');
+                                const attrName = parts[parts.length - 1];
+                                
+                                if (attrName === 'style' && typeof value === 'string') {
+                                    el.style.cssText = value;
+                                } else if (attrName === 'class' && typeof value === 'string') {
+                                    el.className = value;
+                                } else if (attrName === 'id' && typeof value === 'string') {
+                                    el.id = value;
+                                } else {
+                                    el.setAttribute(attrName, String(value));
+                                }
+                            }
+                        }
+                    });
                 }
+            };
+
+            // Process the element itself
+            processElement(element);
+            
+            // Process all child elements
+            element.querySelectorAll('[data-bind], [class-pointer], [id-pointer], [attr-pointer]').forEach(el => {
+                processElement(el);
             });
         }
 
@@ -279,61 +341,6 @@ export function defineComponent(name, options) {
             return path.split('.').reduce((current, prop) => current?.[prop], obj);
         }
 
-        /**
-         * Apply dynamic attributes to an element based on attr-pointer directives
-         * Handles both string format (e.g., "style='color: red;'") and array of objects format
-         * @param {HTMLElement} element - The element to apply attributes to
-         * @param {string|Array|Object} value - The attribute definition(s)
-         */
-        _applyDynamicAttributes(element, value) {
-            let attributesToApply = {};
-
-            if (typeof value === 'string') {
-                // Parse string format: "style='color: red;' class='highlight'"
-                attributesToApply = this._parseAttributeString(value);
-            } else if (Array.isArray(value)) {
-                // Merge all objects in the array
-                value.forEach(item => {
-                    if (typeof item === 'object' && item !== null) {
-                        Object.assign(attributesToApply, item);
-                    }
-                });
-            } else if (typeof value === 'object' && value !== null) {
-                // Single object format
-                attributesToApply = value;
-            }
-
-            // Apply all attributes to the element
-            Object.entries(attributesToApply).forEach(([attrName, attrValue]) => {
-                if (attrName === 'style' && typeof attrValue === 'string') {
-                    // Special handling for style attribute
-                    element.style.cssText = attrValue;
-                } else {
-                    element.setAttribute(attrName, String(attrValue));
-                }
-            });
-        }
-
-        /**
-         * Parse attribute string format: "style='color: red;' title='User name'"
-         * Handles both single and double quoted values, including CSS values with semicolons
-         * @param {string} attrString - The attribute string to parse
-         * @returns {Object} Object with parsed attributes
-         */
-        _parseAttributeString(attrString) {
-            const attributes = {};
-            
-            // Match patterns like: attr="value" or attr='value'
-            // This regex handles CSS with semicolons and special characters
-            const attrRegex = /(\w+)=["']([^"']*)["']/g;
-            let match;
-            
-            while ((match = attrRegex.exec(attrString)) !== null) {
-                attributes[match[1]] = match[2];
-            }
-            
-            return attributes;
-        }
     }
 
     customElements.define(name, Component);
