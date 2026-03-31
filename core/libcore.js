@@ -142,6 +142,9 @@ export function defineComponent(name, options) {
 
             // Third pass: handle attr-pointer attributes dynamically
             this._applyAttrPointers(root);
+
+            // Fourth pass: setup event listeners
+            this._setupEventListeners();
         }
 
         /**
@@ -339,6 +342,39 @@ export function defineComponent(name, options) {
          */
         _getNestedProperty(obj, path) {
             return path.split('.').reduce((current, prop) => current?.[prop], obj);
+        }
+
+        /**
+         * Setup event listeners for o-when directives
+         * Syntax: o-when:click="functionName"
+         * Supported events: click, dblclick, change, input
+         */
+        _setupEventListeners() {
+            const supportedEvents = ['click', 'dblclick', 'change', 'input'];
+            
+            supportedEvents.forEach(eventName => {
+                const attrName = `o-when:${eventName}`;
+                const functionName = this.getAttribute(attrName);
+                
+                if (functionName) {
+                    // Check if the function exists in the global scope
+                    const handler = window[functionName];
+                    
+                    if (typeof handler !== 'function') {
+                        console.error(
+                            `[oHTML o-when Error] Function "${functionName}" not found in window scope. ` +
+                            `Make sure the function is declared globally and is available before the component is initialized.`
+                        );
+                        return;
+                    }
+                    
+                    // Bind the handler to the component context
+                    const boundHandler = handler.bind(this);
+                    
+                    // Add event listener to the component element
+                    this.addEventListener(eventName, boundHandler);
+                }
+            });
         }
 
     }

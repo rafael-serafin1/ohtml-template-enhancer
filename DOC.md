@@ -130,6 +130,51 @@ This feature is designed to work seamlessly with **data-bind** attributes, enabl
 
 ---
 
+### Dynamic Attributes Assignment with `attr-pointer`
+
+The `attr-pointer` attribute enables dynamic attribute assignment to elements. This allows you to pass HTML attributes (style, class, title, data-*, etc.) dynamically from component attributes.
+
+#### How it works:
+
+1. Add `attr-pointer="pointername-PROP"` to elements inside your template
+2. Pass attributes through component attributes using the pointer name
+3. Attributes are applied dynamically to the corresponding elements
+
+#### Example:
+
+**Template Definition:**
+```html
+<template id="user-card" data-use-shadow="false">
+    <div class="user-item">
+        <h2 data-bind="name" attr-pointer="name-style, name-title"></h2>
+        <p data-bind="email" attr-pointer="email-style, email-title"></p>
+    </div>
+</template>
+```
+
+**Component Usage - String Format:**
+```html
+<user-card 
+    name="Rafael" 
+    email="rafael@gmail.com"
+    :name-style="style='color: gold; font-weight: bold;' title='User name'"
+    name-title="Software Developer"
+    :email-style="style='color: gray; font-style: italic;' title='Email address'"
+    email-title="User email adress">
+</user-card>
+```
+
+#### Key Points:
+
+- **Flexible Format** - Choose between string, object, or array format depending on your needs
+- **Special Style Handling** - `style` attributes are applied via `cssText` for better CSS support
+- **Type Safety** - Use `:` prefix for objects/arrays to enable JSON parsing
+- **Direct Attributes** - Perfect for setting `title`, `aria-*`, `data-*` attributes dynamically
+- **Works with o-for** - Can reference nested properties like `item.attrs` inside loops
+- **CSS Classes** - For dynamic classes, prefer `class-pointer` over `attr-pointer` for better semantics
+
+--- 
+
 ### Intelligent Type Parsing with `:` Prefix
 
 The `:` prefix enables intelligent type parsing for attribute values. By default, all attribute values are treated as strings. With the `:` prefix, values are parsed as JSON, allowing you to pass **numbers**, **booleans**, and **objects** to your components.
@@ -229,7 +274,7 @@ The `boolean-state` provides a boolean value declared inline.
 
 ---
 
-### If statement (Conditional Rendering)
+### Conditional Rendering with `o-if`
 
 The `o-if` attribute enables conditional rendering of elements based on boolean values. Elements with `o-if` will only appear if the referenced attribute is `true`, and will be hidden if it's `false`.
 
@@ -407,47 +452,152 @@ o-for="itemName in arrayAttributeName"
 
 ---
 
-### Dynamic Attributes Assignment with `attr-pointer`
+### Event Handling with `o-when`
 
-The `attr-pointer` attribute enables dynamic attribute assignment to elements. This allows you to pass HTML attributes (style, class, title, data-*, etc.) dynamically from component attributes.
+The `o-when` attribute enables event handling by attaching event listeners to custom components. When a specified event occurs, a global function is called with the component as context.
 
 #### How it works:
 
-1. Add `attr-pointer="pointername-PROP"` to elements inside your template
-2. Pass attributes through component attributes using the pointer name
-3. Attributes are applied dynamically to the corresponding elements
+1. Declare a global function in your JavaScript (attached to `window` object)
+2. Add `o-when:eventName="functionName"` to your component tag
+3. When the event fires, the function is called with `this` bound to the component
+4. Currently supported events: `click`, `dblclick`, `change`, `input`
+
+#### Syntax:
+
+```
+o-when:eventName="functionName"
+```
+
+- **eventName** - One of: `click`, `dblclick`, `change`, `input`
+- **functionName** - Name of a global function to call when the event fires
+- Function must be accessible via `window.functionName`
 
 #### Example:
 
-**Template Definition:**
-```html
-<template id="user-card" data-use-shadow="false">
-    <div class="user-item">
-        <h2 data-bind="name" attr-pointer="name-style, name-title"></h2>
-        <p data-bind="email" attr-pointer="email-style, email-title"></p>
-    </div>
-</template>
+**JavaScript - Define global handler:**
+```javascript
+window.handleCardClick = function() {
+    // 'this' refers to the component element
+    const name = this.getAttribute('name');
+    const email = this.getAttribute('email');
+    console.log(`Clicked on ${name} (${email})`);
+    alert(`User: ${name}`);
+};
+
+window.handleCardDblClick = function() {
+    console.log('Double clicked!');
+};
 ```
 
-**Component Usage - String Format:**
+**HTML - Use o-when on component:**
 ```html
 <user-card 
     name="Rafael" 
     email="rafael@gmail.com"
-    :name-style="style='color: gold; font-weight: bold;' title='User name'"
-    name-title="Software Developer"
-    :email-style="style='color: gray; font-style: italic;' title='Email address'"
-    email-title="User email adress">
+    o-when:click="handleCardClick"
+    o-when:dblclick="handleCardDblClick"
+    style="cursor: pointer;">
 </user-card>
 ```
 
+#### Supported Events:
+
+- **`click`** - Single mouse click on the component
+- **`dblclick`** - Double mouse click on the component
+- **`change`** - Value change (useful for input components)
+- **`input`** - Input event (real-time input feedback)
+
+#### Example with Input Event:
+
+**JavaScript:**
+```javascript
+window.handleFormInput = function(event) {
+    const value = event.target.value;
+    console.log('Input value:', value);
+};
+```
+
+**HTML:**
+```html
+<my-input o-when:input="handleFormInput"></my-input>
+```
+
+#### Context Binding:
+
+Inside the handler function, `this` refers to the component element. You can access component attributes and methods:
+
+```javascript
+window.handleCardClick = function() {
+    // Access attributes
+    const name = this.getAttribute('name');
+    const email = this.getAttribute('email');
+    
+    // Get parsed data values
+    const userId = this.getData('user-id');
+    
+    // Log component information
+    console.log('Component tag:', this.tagName);
+    console.log('Component name:', name);
+};
+```
+
+#### Error Handling:
+
+If the specified function is not found in the global scope, an error is logged:
+
+```
+[oHTML o-when Error] Function "handleClick" not found in window scope. 
+Make sure the function is declared globally and is available before the component is initialized.
+```
+
+**Solutions:**
+- Ensure the function is declared before the component is instantiated
+- Make sure the function is attached to the `window` object
+- Check for typos in the function name
+- Use the browser's developer console to verify the function exists: `console.log(window.handleClick)`
+
 #### Key Points:
 
-- **Flexible Format** - Choose between string, object, or array format depending on your needs
-- **Special Style Handling** - `style` attributes are applied via `cssText` for better CSS support
-- **Type Safety** - Use `:` prefix for objects/arrays to enable JSON parsing
-- **Direct Attributes** - Perfect for setting `title`, `aria-*`, `data-*` attributes dynamically
-- **Works with o-for** - Can reference nested properties like `item.attrs` inside loops
-- **CSS Classes** - For dynamic classes, prefer `class-pointer` over `attr-pointer` for better semantics
+- **Global scope** - Functions must be declared globally (on `window` object)
+- **Order matters** - Define handlers before components are initialized
+- **This binding** - Handler receives component as `this` context
+- **Single handler per event** - Each event type can have one handler (subsequent declarations override)
+- **Event object** - Event listeners receive the standard DOM event object: `function(event) { ... }`
+- **No inline handlers** - Function names only, actual code cannot be inlined
 
---- 
+#### Best Practices:
+
+1. Define all handlers in a separate script or module:
+```html
+<script>
+    window.handleCardClick = function() { ... };
+    window.handleFormInput = function() { ... };
+</script>
+<script type="module" src="core/runtime.js"></script>
+```
+
+2. Use meaningful function names that describe the action:
+```html
+<!-- Good -->
+<user-card o-when:click="openUserProfile"></user-card>
+
+<!-- Less clear -->
+<user-card o-when:click="handle"></user-card>
+```
+
+3. Access component data within handlers:
+```javascript
+window.handleUserCardClick = function() {
+    const userData = {
+        name: this.getAttribute('name'),
+        email: this.getAttribute('email'),
+        userId: this.getData('user-id') // Parsed data
+    };
+    
+    sendToServer(userData);
+};
+```
+
+
+
