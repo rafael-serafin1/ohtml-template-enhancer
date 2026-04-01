@@ -45,10 +45,10 @@ export function defineComponent(name, options) {
         }
 
         applyAttributes(root) {
-            // First pass: handle o-for loops
+            // handle o-for loops
             this._processForLoops(root);
             
-            // Second pass: handle regular bindings
+            // handle regular bindings
             observedAttributes.forEach(attr => {
                 // Skip o-for attributes as they're handled separately
                 if (attr.includes(" in ")) return;
@@ -90,16 +90,6 @@ export function defineComponent(name, options) {
                         el.id = String(parsedValue);
                     }
                 });
-
-                /**
-                 * ! deprecated and marked for removal in the future, use o-if instead for conditional rendering and class-pointer for class assignment
-                 */
-                root.querySelectorAll(`[boolean-state="${attr}"]`).forEach(el => {
-                    if (typeof parsedValue === "boolean") 
-                        if (parsedValue) el.setAttribute(attr, "");
-                        else el.removeAttribute(attr);
-                        console.warn("[oHTML Warning] boolean-state is a deprecated directive and will be removed soon. Try using o-if instead.");
-                });
                 
                 // Apply o-if conditional rendering
                 root.querySelectorAll(`[o-if="${attr}"]`).forEach(el => {
@@ -140,10 +130,16 @@ export function defineComponent(name, options) {
                 this._componentData[attr] = parsedValue;
             });
 
-            // Third pass: handle attr-pointer attributes dynamically
+            // handle attr-pointer attributes dynamically
             this._applyAttrPointers(root);
 
-            // Fourth pass: setup event listeners
+            // handle name-bind attributes for slots
+            this._applyNameBindings(root);
+
+            // handle model-link two-way binding
+            this._applyModelLink(root);
+
+            // setup event listeners
             this._setupEventListeners();
         }
 
@@ -195,6 +191,95 @@ export function defineComponent(name, options) {
                         el.setAttribute(attrName, String(parsedValue));
                     }
                 });
+            });
+        }
+
+        /**
+         * Apply name-bind attributes to slot elements
+         * Syntax: name-bind="slotName"
+         * Maps component attribute values to slot name attribute
+         */
+        _applyNameBindings(root) {
+            root.querySelectorAll('[name-bind]').forEach(el => {
+                const pointerName = el.getAttribute('name-bind');
+                if (!pointerName) return;
+
+                // Try to get attribute from component (check both prefixed and non-prefixed)
+                const prefixedName = `:${pointerName}`;
+                let rawValue;
+                
+                if (this.hasAttribute(prefixedName)) {
+                    rawValue = this.getAttribute(prefixedName);
+                } else {
+                    rawValue = this.getAttribute(pointerName);
+                }
+                
+                // If no explicit value, use the pointer name as the slot name (literal value)
+                if (rawValue === null) {
+                    rawValue = pointerName;
+                }
+                
+                // Parse the value if prefixed
+                const { value: parsedValue } = parseAttribute(
+                    this.hasAttribute(prefixedName) ? prefixedName : pointerName,
+                    rawValue
+                );
+                
+                // Set the slot name attribute
+                el.setAttribute('name', String(parsedValue));
+            });
+        }
+
+        /**
+         * Apply model-link two-way binding for input elements
+         * Syntax: <input model-link="propertyName">
+         * Synchronizes: component attribute <-> input value
+         */
+        _applyModelLink(root) {
+            root.querySelectorAll('[model-link]').forEach(inputEl => {
+                const propName = inputEl.getAttribute('model-link');
+                if (!propName) return;
+
+                // Only process input-like elements
+                if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(inputEl.tagName)) {
+                    console.warn(
+                        `[oHTML model-link Warning] model-link is only supported on INPUT, TEXTAREA, or SELECT elements. ` +
+                        `Found on ${inputEl.tagName}`
+                    );
+                    return;
+                }
+
+                // Get current attribute value (check both prefixed and non-prefixed)
+                const prefixedName = `:${propName}`;
+                let rawValue;
+                
+                if (this.hasAttribute(prefixedName)) {
+                    rawValue = this.getAttribute(prefixedName);
+                } else {
+                    rawValue = this.getAttribute(propName);
+                }
+
+                // Initialize input value from component attribute
+                if (rawValue !== null) {
+                    const { value: parsedValue } = parseAttribute(
+                        this.hasAttribute(prefixedName) ? prefixedName : propName,
+                        rawValue
+                    );
+                    // Only update if different to avoid disrupting user interaction
+                    const stringValue = String(parsedValue);
+                    if (inputEl.value !== stringValue) {
+                        inputEl.value = stringValue;
+                    }
+                }
+
+                // Create and attach input event listener for state synchronization
+                const handleInput = () => {
+                    // Update the component attribute when input changes
+                    // This will trigger attributeChangedCallback and re-render
+                    this.setAttribute(propName, inputEl.value);
+                };
+
+                inputEl.addEventListener('input', handleInput);
             });
         }
 

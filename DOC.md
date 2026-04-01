@@ -256,24 +256,6 @@ const nameId = card.getData('name-id'); // "user-daniel"
 
 ---
 
-### Boolean State Provider
-
-The `boolean-state` provides a boolean value declared inline.
-
-#### Example:
-
-```html
-<template>
-    <div class="main-user-card">
-        <h1 data-bind="name" id-pointer="name-id" class-pointer="user-name"></h1>
-        <p data-bind="email" id-pointer="email-id" class-pointer="user-email"></p>
-        <p data-bind="logged" boolean-state="active" id-pointer="log"></p>
-    </div>
-</template>
-```
-
----
-
 ### Conditional Rendering with `o-if`
 
 The `o-if` attribute enables conditional rendering of elements based on boolean values. Elements with `o-if` will only appear if the referenced attribute is `true`, and will be hidden if it's `false`.
@@ -599,5 +581,165 @@ window.handleUserCardClick = function() {
 };
 ```
 
+---
 
+### Slot dynamic content association   
 
+Using `name-bind` as a atribute for `<slot>` element, it is possible to add content to it dynamically by calling its name within the element.
+
+#### Usage:
+
+```html
+<template id="user-card">
+    <div>
+        <header><slot name-bind="header"></slot></header>
+        <section><slot name-bind="main"></slot></section>
+    </div>
+</template>
+
+<user-card>
+    <h2 slot="header">Title</h2>
+    <p slot="main">Main description...</p>
+</user-card>
+```
+
+---
+
+### Two-Way Data Binding with `model-link`
+
+The `model-link` attribute enables two-way data binding on input elements, synchronizing automatically between the input value and the component attribute. This is useful for form inputs, search boxes, and any scenario where you need real-time value synchronization without heavy framework overhead.
+
+#### How it works:
+
+1. Add `model-link="propertyName"` to input elements inside your template
+2. The input is automatically initialized with the component attribute value
+3. When the user types, the component attribute is updated in real-time
+4. When the component attribute changes (from JavaScript or elsewhere), the input value updates
+5. Works alongside `data-bind` for displaying the synchronized value
+
+#### Syntax:
+
+```html
+<input model-link="propertyName" placeholder="Type here..."/>
+```
+
+#### Supported Elements:
+
+- `<input>` - Text, email, number, password, etc.
+- `<textarea>` - Multi-line text input
+- `<select>` - Dropdown selection
+
+#### Example: Basic Input Synchronization
+
+**Template Definition:**
+```html
+<template id="search-box">
+    <div>
+        <input model-link="query" placeholder="Search..."/>
+        <p>Search for: <strong data-bind="query"></strong></p>
+    </div>
+</template>
+```
+
+**Component Usage:**
+```html
+<!-- Input starts with "javascript" -->
+<search-box query="javascript"></search-box>
+```
+
+**Behavior:**
+- Input shows "javascript" initially
+- Typing "react" in the input updates the query attribute
+- The `<p>` text updates to "Search for: react" in real-time
+
+#### Example: Form with Multiple Inputs
+
+**Template Definition:**
+```html
+<template id="contact-form" data-use-shadow="false">
+    <form>
+        <div>
+            <label>Name:</label>
+            <input model-link="name" placeholder="Full name"/>
+        </div>
+        <div>
+            <label>Email:</label>
+            <input model-link="email" placeholder="Email address"/>
+        </div>
+        <div style="background: #f5f5f5; padding: 10px; margin-top: 10px;">
+            <p>Name: <strong data-bind="name"></strong></p>
+            <p>Email: <strong data-bind="email"></strong></p>
+        </div>
+    </form>
+</template>
+```
+
+**Component Usage:**
+```html
+<contact-form name="João Silva" email="joao@example.com"></contact-form>
+```
+
+#### Interaction Flow:
+
+1. **User types in input** → `handleInput` event listener triggers
+2. **Component attribute updated** → `setAttribute()` is called
+3. **Change detected** → `attributeChangedCallback()` is invoked
+4. **Component re-renders** → `render()` is called
+5. **Input value restored** → `_applyModelLink` re-initializes with updated value
+6. **Display updates** → `data-bind` elements reflect the new value
+
+#### JavaScript Integration:
+
+```javascript
+// Get the component
+const form = document.querySelector('contact-form');
+
+// Read current values
+const name = form.getAttribute('name');
+const email = form.getAttribute('email');
+
+// Update values programmatically
+form.setAttribute('name', 'Maria Santos');
+form.setAttribute('email', 'maria@example.com');
+
+// Both the inputs and data-bind elements will update automatically
+```
+
+#### Key Characteristics:
+
+- ✅ **Lightweight** - No heavy framework needed, pure vanilla JavaScript
+- ✅ **Bidirectional** - Input → attribute → display automatic synchronization
+- ✅ **Preserves HTML semantics** - Uses native input elements and events
+- ✅ **Works with data-bind** - Combines perfectly with content binding
+- ✅ **Event-driven** - Uses native `input` event for real-time synchronization
+- ❌ **Re-renders on change** - Component re-renders when attribute updates (trade-off for simplicity)
+
+#### Important Notes:
+
+1. **Cursor position** - Input loses focus/cursor position on re-render (expected behavior)
+2. **Debouncing** - Not built-in; use external debouncing if needed
+3. **Validation** - Not included; implement validation separately
+4. **Parsed attributes** - Use prefixed attributes (`:`) for complex data types with caution
+5. **Performance** - Each keystroke triggers a re-render; useful for moderate form sizes
+
+#### Example: Form with Event Handling
+
+**JavaScript:**
+```javascript
+window.submitForm = function() {
+    const name = this.getAttribute('name');
+    const email = this.getAttribute('email');
+    console.log('Form submitted:', { name, email });
+    // Send to server, etc.
+};
+```
+
+**HTML:**
+```html
+<contact-form 
+    name="" 
+    email=""
+    o-when:change="submitForm"
+    style="cursor: pointer;">
+</contact-form>
+```

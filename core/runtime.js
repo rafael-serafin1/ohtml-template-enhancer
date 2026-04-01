@@ -26,14 +26,6 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
-     * ? boolean state 
-     * ! deprecated and marked for removal in the future
-     */
-    template.content.querySelectorAll('[boolean-state]').forEach((el) => {
-        const attr = el.getAttribute('boolean-state');
-        if (attr) binds.add(attr);
-    });
-    /**
      * ? o-if conditional rendering attribute statement (deletes element if false)
      */
     template.content.querySelectorAll('[o-if]').forEach((el) => {
@@ -55,9 +47,23 @@ function getTemplateObservedAttributes(template) {
         if (attr) binds.add(attr);
     });
     /**
-     * ? o-when event directive for attaching event listeners to the component (e.g., o-when:click="handleClick")
+     * ? name-bind for dynamic slot name binding (e.g., <slot name-bind="slotName">)
      */
-    // Note: o-when attributes are detected on the component element itself, not in templates
+    template.content.querySelectorAll('[name-bind]').forEach((el) => {
+        const attr = el.getAttribute('name-bind');
+        if (attr) binds.add(attr);
+    });
+    /**
+     * ? model-link for two-way data binding on inputs (e.g., <input model-link="propertyName">)
+     */
+    template.content.querySelectorAll('[model-link]').forEach((el) => {
+        const attr = el.getAttribute('model-link');
+        if (attr) binds.add(attr);
+    });
+    /**
+     * ? o-when event directive for attaching event listeners to the component (e.g., o-when:click="handleClick")
+     * * o-when attributes are detected on the component element itself, not in templates
+     */  
 
     /**
      * ? o-for loop directive (similar to Vue's v-for) for rendering lists based on array data

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test model-link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .demo {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        p {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .info {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test: model-link Attribute</h1>
+    
+    <!-- import oHTML template enhancer core -->
+    <script type="module" src="core/runtime.js"></script>
+
+    <!-- Test 1: Basic model-link with data-bind -->
+    <template id="auto-input">
+        <div>
+            <input model-link="name" placeholder="Type something..."/>
+            <p data-bind="name"></p>
+        </div>
+    </template>
+
+    <div class="demo">
+        <h2>Test 1: Basic model-link</h2>
+        <p>Component:</p>
+        <auto-input name="Rafael"></auto-input>
+        <div class="info">
+            <p><strong>Expected behavior:</strong></p>
+            <ul>
+                <li>Input should show "Rafael"</li>
+                <li>Typing in input should update the &lt;p&gt; below</li>
+                <li>Value should sync: input → state → data-bind</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Test 2: model-link with initial empty value -->
+    <template id="form-input">
+        <div>
+            <label>Enter your name: </label>
+            <input model-link="username" placeholder="Type your name..."/>
+            <p>Your name is: <span data-bind="username"></span></p>
+        </div>
+    </template>
+
+    <div class="demo">
+        <h2>Test 2: model-link with empty initial value</h2>
+        <p>Component:</p>
+        <form-input username=""></form-input>
+        <div class="info">
+            <p><strong>Expected behavior:</strong></p>
+            <ul>
+                <li>Input should start empty</li>
+                <li>Typing should update the span below</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Test 3: model-link with prefixed attribute (JSON parsing) -->
+    <template id="data-input">
+        <div>
+            <input model-link="data" placeholder="Edit data..."/>
+            <p>Current value: <span data-bind="data"></span></p>
+        </div>
+    </template>
+
+    <div class="demo">
+        <h2>Test 3: model-link with parsed data</h2>
+        <p>Component:</p>
+        <data-input :data='{"value": "test"}'></data-input>
+        <div class="info">
+            <p><strong>Expected behavior:</strong></p>
+            <ul>
+                <li>Input should show: {"value": "test"}</li>
+                <li>Can edit the JSON in the input</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Test 4: Multiple model-link inputs in one component -->
+    <template id="contact-form" data-use-shadow="false">
+        <div style="padding: 10px; border: 1px solid #ccc;">
+            <div style="margin-bottom: 10px;">
+                <label>Name: </label>
+                <input model-link="firstName" placeholder="First name"/>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Email: </label>
+                <input model-link="email" placeholder="Email"/>
+            </div>
+            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 4px;">
+                <p>First Name: <strong data-bind="firstName"></strong></p>
+                <p>Email: <strong data-bind="email"></strong></p>
+            </div>
+        </div>
+    </template>
+
+    <div class="demo">
+        <h2>Test 4: Multiple model-link inputs</h2>
+        <p>Component:</p>
+        <contact-form firstName="João" email="joao@example.com"></contact-form>
+        <div class="info">
+            <p><strong>Expected behavior:</strong></p>
+            <ul>
+                <li>Both inputs should be initialized with their values</li>
+                <li>Each input should sync independently</li>
+                <li>Changing firstName input should update First Name display</li>
+                <li>Changing email input should update Email display</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Debug Console</h2>
+    <div class="info" id="debug">
+        <p>Check the browser console for any errors.</p>
+    </div>
+
+    <script>
+        // Simple test to verify component registration
+        window.addEventListener('load', function() {
+            const debugDiv = document.getElementById('debug');
+            const components = document.querySelectorAll('auto-input, form-input, data-input, contact-form');
+            const debug = document.getElementById('debug');
+            debug.innerHTML = '<p>Components found: ' + components.length + '</p>';
+            
+            components.forEach((comp, index) => {
+                debug.innerHTML += '<p>Component ' + (index + 1) + ': ' + comp.tagName.toLowerCase() + '</p>';
+            });
+        });
+    </script>
+</body>
+</html>

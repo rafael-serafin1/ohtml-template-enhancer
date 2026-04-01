@@ -63,50 +63,76 @@
             </ul>
         </template>
 
+        <!-- Example template using name-bind for dynamic slot names -->
+        <template id="card-layout">
+            <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
+                <header style="margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                    <slot name-bind="header">Default Header</slot>
+                </header>
+                <main style="margin-bottom: 15px;">
+                    <slot name-bind="content">Default Content</slot>
+                </main>
+                <footer style="text-align: center; color: #666; font-size: 12px;">
+                    <slot name-bind="footer">Default Footer</slot>
+                </footer>
+            </div>
+        </template>
+
         <main>
-            <section>
-                <h2>User Cards with o-when Event Handlers</h2>
-                <div>
-                    <user-card 
-                        name="Rafael Engel Serafin" 
-                        email="rafael@gmail.com" 
-                        age="19 years old" 
-                        bio="Computer Science student"
-                        name-style="color: #2563eb; font-weight: bold;"
-                        name-title="Full Stack Developer"
-                        email-style="color: #10b981; font-weight: bold;"
-                        email-title="Email do usuário"
-                        age-style="color: #f59e0b;"
-                        bio-style="color: #666; font-size: 14px;"
-                        o-when:click="handleCardClick"
-                        o-when:dblclick="handleCardDblClick"
-                        style="cursor: pointer; border: 2px solid #e0e0e0; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    </user-card>
+            <!-- name-bind example -->
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <section style="margin-bottom: 30px;">
+                    <card-layout>
+                        <h1 slot="header" style="margin: 0; color: #2563eb;">Welcome to oHTML</h1>
+                        <p slot="content">This is a dynamic slot content using <strong>name-bind</strong>. The slot names are defined in the template attributes.</p>
+                        <p slot="footer">© 2026 oHTML T.E.</p>
+                    </card-layout>
+                </section>
+
+                <div style="display: flex; flex-direction: row;">
+                    <section>
+                        <div>
+                            <user-card 
+                                name="Rafael Serafin" 
+                                email="rafael@gmail.com" 
+                                age="19 years old" 
+                                bio="Computer Science student"
+                                name-style="color: #2563eb; font-weight: bold;"
+                                name-title="Full Stack Developer"
+                                email-style="color: #10b981; font-weight: bold;"
+                                email-title="Email do usuário"
+                                age-style="color: #f59e0b;"
+                                bio-style="color: #666; font-size: 14px;"
+                                o-when:click="handleCardClick"
+                                o-when:dblclick="handleCardDblClick"
+                                style="cursor: pointer; border: 2px solid #e0e0e0; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            </user-card>
+                        </div>
+                    </section>
+                    <section>
+                        <div>
+                            <user-card 
+                                name="John Doe"
+                                email="john.doe@gmail.com"
+                                age="25 years old"
+                                bio="Software engineer with passion for innovation"
+                                name-style="color: #dc2626; font-weight: bold;"
+                                name-title="Backend Developer"
+                                email-style="color: #7c3aed; font-style: italic;"
+                                email-title="Email do desenvolvedor"
+                                age-style="color: #059669;"
+                                bio-style="color: #666; font-size: 14px;"
+                                o-when:click="handleCardClick"
+                                style="cursor: pointer; border: 2px solid #e0e0e0; padding: 10px; border-radius: 8px;">
+                            </user-card>
+                        </div>
+                    </section>
                 </div>
-            </section>
-            <section>
-                <div>
-                    <user-card 
-                        name="John Doe"
-                        email="john.doe@gmail.com"
-                        age="25 years old"
-                        bio="Software engineer with passion for innovation"
-                        name-style="color: #dc2626; font-weight: bold;"
-                        name-title="Backend Developer"
-                        email-style="color: #7c3aed; font-style: italic;"
-                        email-title="Email do desenvolvedor"
-                        age-style="color: #059669;"
-                        bio-style="color: #666; font-size: 14px;"
-                        o-when:click="handleCardClick"
-                        style="cursor: pointer; border: 2px solid #e0e0e0; padding: 10px; border-radius: 8px;">
-                    </user-card>
-                </div>
-            </section>
+            </div>
         </main>
 
         <!-- o-for usage example -->
         <div style="margin-top: 50px; padding: 20px; background: #f5f5f5;">
-            <h2>User List Example (using o-for and attr-pointer)</h2>
             <!-- Example: Object format for attr-pointer with o-for -->
             <h3>Dynamic attributes with o-for loop</h3>
             <user-list :users='[

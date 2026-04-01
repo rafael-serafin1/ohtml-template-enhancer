@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model-link Test (Simple)</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { padding: 5px; font-size: 14px; }
+        p { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Simple model-link Test</h1>
+    
+    <script type="module" src="core/runtime.js"></script>
+
+    <template id="test-model">
+        <div>
+            <input model-link="value" placeholder="Type here..."/>
+            <p>You typed: <span data-bind="value"></span></p>
+        </div>
+    </template>
+
+    <test-model value="Hello"></test-model>
+</body>
+</html>
