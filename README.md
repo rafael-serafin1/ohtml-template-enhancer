@@ -71,20 +71,51 @@ When users type in the input, both the component attribute and the display updat
 ### Alternative usage:
 
 ```html 
+<template id="generic-triple">
+  <div><div><div>
+    <slot></slot>
+  </div></div></div>
+</template>
+
 <template id="triple-div">
   <div>
+    <slot name-bind="title"></slot>
     <div>
+      <slot name-bind="semi-title"></slot>
       <div>
-        <slot></slot> <!-- mandatory tag -->
+        <slot name-bind="description"></slot> 
       </div>
     </div>
   </div>
+</template>
+
+<template id="user-list" data-use-shadow="false">
+  <ul o-if="active">
+    <li o-for="user in users" class="user-item" attr-pointer="user.styling">
+      <h3 data-bind="user.name" style="margin: 0;"></h3>
+      <p data-bind="user.email" style="margin: 5px 0; color: #666;"></p>
+    </li>
+  </ul>
 </template>
 ```
 
 using it:
 ```html
-<triple-div>
+<generic-triple>
   <p>This paragraph is inside of 3 div's.</p>
+</generic-triple>
+
+<triple-div>
+  <h2 slot="title">Rafael</h2>
+  <p slot="semi-title">C. Science Student</p>
+  <p slot="description">Hi! My name is Rafael and I desire to become a Software Enginner!</p>
 </triple-div>
+
+<user-list :active="true" 
+  :users='[
+    {"name": "Rafael Engel", "email": "rafael@gmail.com", "styling": {"style": "color: #2563eb; font-weight: bold;", "title": "Full Stack Developer"}},
+    {"name": "Daniel Dias", "email": "daniel@gmail.com", "styling": {"style": "color: #dc2626; font-weight: bold;", "title": "Backend Developer"}},
+    {"name": "João Silva", "email": "joao@gmail.com", "styling": {"style": "color: #059669; font-weight: bold;", "title": "Frontend Developer"}},
+    {"name": "Maria Santos", "email": "maria@gmail.com", "styling": {"style": "color: #7c3aed; font-weight: bold;", "title": "QA Engineer"}}
+  ]'></user-list>
 ```
