@@ -1,2 +1,10 @@
+* text=auto
+
+*.js text eol=lf
+*.js diff=javascript
+*.css text eol=lf
+*.css diff=css
+
 *.md diff=markdown
+*.html diff=html
 *.html merge=ours
