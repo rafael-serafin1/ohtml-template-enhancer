@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: model-link Focus Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 2px solid #0066cc;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.3);
+            background-color: #fff;
+        }
+        .display {
+            background-color: #e8f4ff;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #0066cc;
+        }
+        .display p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .status {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 0;
+        }
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fffbea;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Test: Model-Link Focus Fix</h1>
+    <p style="color: #666; font-style: italic;">Teste a digitação contínua sem perder o focus do input</p>
+
+    <script type="module" src="core/runtime.js"></script>
+
+    <!-- Test 1: Simple input with focus preservation -->
+    <template id="focus-test">
+        <div>
+            <input model-link="name" placeholder="Digite aqui sem perder o foco..."/>
+            <div class="display">
+                <p>✓ Você digitou: <strong data-bind="name"></strong></p>
+            </div>
+        </div>
+    </template>
+
+    <div class="test-section">
+        <h2>Teste 1: Preservação de Focus</h2>
+        <focus-test name="Rafael"></focus-test>
+        <div class="status success">
+            ✅ Se o focus não for perdido ao digitar, o teste passou!
+        </div>
+        <div class="note">
+            <strong>Como testar:</strong> Digite vários caracteres consecutivos. O cursor deve permanecer no input e continuar funcionando normalmente.
+        </div>
+    </div>
+
+    <!-- Test 2: Multiple inputs with independent focus -->
+    <template id="multi-focus">
+        <div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Nome:</label>
+                <input model-link="firstName" placeholder="Seu nome..."/>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Email:</label>
+                <input model-link="email" placeholder="seu@email.com"/>
+            </div>
+            <div class="display">
+                <p>Nome: <strong data-bind="firstName"></strong></p>
+                <p>Email: <strong data-bind="email"></strong></p>
+            </div>
+        </div>
+    </template>
+
+    <div class="test-section">
+        <h2>Teste 2: Múltiplas Inputs</h2>
+        <multi-focus firstName="João" email="joao@example.com"></multi-focus>
+        <div class="status success">
+            ✅ Cada input deve manter seu próprio focus independentemente!
+        </div>
+        <div class="note">
+            <strong>Como testar:</strong> Clique em um input e digite. Depois clique no outro e digite. Nenhum deve perder o foco.
+        </div>
+    </div>
+
+    <!-- Test 3: Textarea -->
+    <template id="textarea-test">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Mensagem:</label>
+            <textarea model-link="message" placeholder="Escreva sua mensagem..." style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;"></textarea>
+            <div class="display">
+                <p>Mensagem: <strong data-bind="message"></strong></p>
+            </div>
+        </div>
+    </template>
+
+    <div class="test-section">
+        <h2>Teste 3: Textarea</h2>
+        <textarea-test message="Texto inicial..."></textarea-test>
+        <div class="status success">
+            ✅ Textarea também deve manter o focus ao digitar!
+        </div>
+        <div class="note">
+            <strong>Como testar:</strong> Digite vários números e símbolos. O cursor deve permanecer na textarea.
+        </div>
+    </div>
+
+    <div style="background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin-top: 30px;">
+        <h3>✨ Resumo do Teste</h3>
+        <ul>
+            <li>✅ Input mantém focus ao digitar</li>
+            <li>✅ Cursor não perde posição</li>
+            <li>✅ Múltiplas inputs funcionam independentemente</li>
+            <li>✅ Textarea também suportada</li>
+            <li>✅ Display (data-bind) atualiza em tempo real</li>
+            <li>✅ Sem re-render desnecessário do input</li>
+        </ul>
+        <p style="margin-top: 15px; color: #0066cc;">
+            Se todos os testes passarem, o problema de perda de focus foi resolvido! 🎉
+        </p>
+    </div>
+</body>
+</html>

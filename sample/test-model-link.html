@@ -39,10 +39,10 @@
     <h1>Test: model-link Attribute</h1>
     
     <!-- import oHTML template enhancer core -->
-    <script type="module" src="core/runtime.js"></script>
+    <script type="module" src="../core/runtime.js"></script>
 
     <!-- Test 1: Basic model-link with data-bind -->
-    <template id="auto-input">
+    <template id="auto-input" data-use-shadow="false">
         <div>
             <input model-link="name" placeholder="Type something..."/>
             <p data-bind="name"></p>

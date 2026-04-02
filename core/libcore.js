@@ -22,6 +22,64 @@ export function defineComponent(name, options) {
             return this._componentData[attrName];
         }
 
+        /**
+         * Override attributeChangedCallback to prevent re-render during model-link updates
+         * This prevents loss of focus when typing in inputs with model-link
+         */
+        attributeChangedCallback(name, oldValue, newValue) {
+            if (oldValue === newValue) return;
+
+            // Check if this attribute is bound to a model-link input
+            const root = this.shadowRoot || this;
+            const hasModelLink = root.querySelector(`[model-link="${name}"]`);
+
+            if (hasModelLink && this._isModelLinkUpdate) {
+                // Skip full re-render during model-link updates
+                // Instead, only update data-bind elements
+                this._updateDataBindings(root, name, newValue);
+                return;
+            }
+
+            // Normal re-render for other attribute changes
+            this.render();
+        }
+
+        /**
+         * Update only data-bind elements without full re-render
+         * This preserves input focus and cursor position
+         */
+        _updateDataBindings(root, attrName, attrValue) {
+            const { value: parsedValue, isParsed } = parseAttribute(
+                this.hasAttribute(`:${attrName}`) ? `:${attrName}` : attrName,
+                attrValue
+            );
+
+            // Update all data-bind elements for this attribute
+            root.querySelectorAll(`[data-bind="${attrName}"]`).forEach(el => {
+                el.textContent = isParsed ? JSON.stringify(parsedValue) : (parsedValue ?? "");
+            });
+
+            // Update class-pointer elements
+            root.querySelectorAll(`[class-pointer="${attrName}"]`).forEach(el => {
+                if (parsedValue) {
+                    el.className = String(parsedValue);
+                }
+            });
+
+            // Update id-pointer elements
+            root.querySelectorAll(`[id-pointer="${attrName}"]`).forEach(el => {
+                if (parsedValue) {
+                    el.id = String(parsedValue);
+                }
+            });
+
+            // Update internal component data
+            if (!this._componentData) {
+                this._componentData = {};
+            }
+            this._componentData[attrName] = parsedValue;
+        }
+
         render() {
             const template = document.getElementById(templateId);
             if (!template) throw new Error(`oHTML couldn't find template: "${templateId}"`);
@@ -273,10 +331,12 @@ export function defineComponent(name, options) {
                 }
 
                 // Create and attach input event listener for state synchronization
+                // This listener updates the component attribute when input value changes
                 const handleInput = () => {
-                    // Update the component attribute when input changes
-                    // This will trigger attributeChangedCallback and re-render
+                    // Set flag to skip full re-render during model-link update
+                    this._isModelLinkUpdate = true;
                     this.setAttribute(propName, inputEl.value);
+                    this._isModelLinkUpdate = false;
                 };
 
                 inputEl.addEventListener('input', handleInput);

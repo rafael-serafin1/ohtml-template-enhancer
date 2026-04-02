@@ -1,6 +1,6 @@
 ## HTML Template Enhancer
 
-***oHTML***, a minimal HTML templating layer that eliminates the need for build tools by enabling reusable, component-based structures directly in HTML, reducing complexity in static site development.
+***oHTML***, a HTML templating layer that eliminates the need for build tools by enabling reusable, component-based structures directly in HTML, reducing complexity in static site development.
 
 ---
 
