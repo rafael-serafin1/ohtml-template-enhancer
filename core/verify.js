@@ -13,3 +13,21 @@ export function nameIsOK(name, templateId) {
     }
     return true;
 }
+
+/**
+ * 
+ * @param {*} attr - attribute
+ * @returns 
+ */
+export function attrDefineValues(attr) {
+    /**
+     * @type src ---> Searchs for source passed by a path. Example: src="./templates.html"
+     * @type 
+     */
+    const values = ["src"];
+    let attrValues = [];
+    values.forEach(value => {
+        if (attr.includes(`${value}`)) attrValues.push(value);
+    });
+    return attrValues;
+}

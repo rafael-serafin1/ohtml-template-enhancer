@@ -81,8 +81,8 @@ export function defineComponent(name, options) {
         }
 
         render() {
-            const template = document.getElementById(templateId);
-            if (!template) throw new Error(`oHTML couldn't find template: "${templateId}"`);
+            // searchs for template by using custom attribute `name-tag`
+            const template = document.querySelector(`template[name-tag="${name}"]`);
 
             // clone template's content
             const content = template.content.cloneNode(true);

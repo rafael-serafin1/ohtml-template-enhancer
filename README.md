@@ -45,6 +45,11 @@ Use the custom tag in your HTML:
 <user-card name="Daniel" email="daniel@gmail.com"></user-card>
 ```
 
+U can use oHTML special element called `<templates-import>` to import templates:
+```html
+<templates-import src="./templates.html"></templates-import>
+```
+
 ---
 
 ### Two-Way Data Binding

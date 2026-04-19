@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates</title>
+</head>
+<body>
+    <!-- template for importing -->
+    <template name-tag="user-card" id="user-card" data-use-shadow="false">
+        <div class="main-user-card">
+            <h1 data-bind="name" id-pointer="name-id" attr-pointer="name-style, name-title"></h1>
+            <p data-bind="email" id-pointer="email-id" attr-pointer="email-style, email-title"></p>
+            <b><p data-bind="age" id-pointer="age-id" attr-pointer="age-style"></p></b>
+            <p data-bind="bio" id-pointer="bio-id" attr-pointer="bio-style"></p>
+        </div>
+    </template>
+    
+    <template name-tag="triple-div" id="triple-div">
+        <div class-pointer="parent-div">
+            <div class-pointer="child-div">
+                <div class-pointer="grandchild-div">
+                    <slot id-pointer="slot-id"></slot>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template name-tag="user-list" id="user-list" data-use-shadow="false">
+        <ul>
+            <li o-for="user in users" class="user-item" id="user.id" attr-pointer="user.styling">
+                <h3 data-bind="user.name" style="margin: 0;"></h3>
+                <p data-bind="user.email" style="margin: 5px 0; color: #666;"></p>
+            </li>
+        </ul>
+    </template>
+
+    <!-- Example template using name-bind for dynamic slot names -->
+    <template name-tag="card-layout" id="card-layout">
+        <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
+            <header style="margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+                <slot name-bind="header">Default Header</slot>
+            </header>
+            <main style="margin-bottom: 15px;">
+                <slot name-bind="content">Default Content</slot>
+            </main>
+            <footer style="text-align: center; color: #666; font-size: 12px;">
+                <slot name-bind="footer">Default Footer</slot>
+            </footer>
+        </div>
+    </template>
+</body>
+</html>
