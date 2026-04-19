@@ -42,7 +42,7 @@
     <script type="module" src="../core/runtime.js"></script>
 
     <!-- Test 1: Basic model-link with data-bind -->
-    <template id="auto-input" data-use-shadow="false">
+    <template name-tag="auto-input" id="auto-input" data-use-shadow="false">
         <div>
             <input model-link="name" placeholder="Type something..."/>
             <p data-bind="name"></p>
@@ -64,7 +64,7 @@
     </div>
 
     <!-- Test 2: model-link with initial empty value -->
-    <template id="form-input">
+    <template name-tag="form-input" id="form-input">
         <div>
             <label>Enter your name: </label>
             <input model-link="username" placeholder="Type your name..."/>
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Test 3: model-link with prefixed attribute (JSON parsing) -->
-    <template id="data-input">
+    <template name-tag="data-input" id="data-input">
         <div>
             <input model-link="data" placeholder="Edit data..."/>
             <p>Current value: <span data-bind="data"></span></p>
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Test 4: Multiple model-link inputs in one component -->
-    <template id="contact-form" data-use-shadow="false">
+    <template name-tag="contact-form" id="contact-form" data-use-shadow="false">
         <div style="padding: 10px; border: 1px solid #ccc;">
             <div style="margin-bottom: 10px;">
                 <label>Name: </label>

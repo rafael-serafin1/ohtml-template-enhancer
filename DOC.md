@@ -4,7 +4,7 @@
 
 Using `<template>`
 ```html
-<template id="my-tag">        <!-- '-' are mandatory for custom tag's name-->
+<template name-tag="my-tag">        <!-- '-' are mandatory for custom tag's name-->
     <div>
         <hr /><br />
     </div>
@@ -21,7 +21,7 @@ Using the special `data-bind` attribute, it's possible to shape the content of c
 
 On `<template>`
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div class="main-content-user-card">
         <h2 data-bind="name"></h2>
         <p data-bind="email"></p>
@@ -50,7 +50,7 @@ The `class-pointer` attribute enables dynamic CSS class assignment, making it pe
 
 **Template Definition:**
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div class="main-user-card">
         <h2 data-bind="name" class-pointer="user-name"></h2>
         <p data-bind="email" class-pointer="user-email"></p>
@@ -103,7 +103,7 @@ The `id-pointer` attribute enables dynamic id assignment, making it perfect for 
 
 **Template Definition:**
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div class="main-user-card">
         <h2 data-bind="name" id-pointer="name-id"></h2>
         <p data-bind="email" id-pointer="email-id"></p>
@@ -144,7 +144,7 @@ The `attr-pointer` attribute enables dynamic attribute assignment to elements. T
 
 **Template Definition:**
 ```html
-<template id="user-card" data-use-shadow="false">
+<template name-tag="user-card" data-use-shadow="false">
     <div class="user-item">
         <h2 data-bind="name" attr-pointer="name-style, name-title"></h2>
         <p data-bind="email" attr-pointer="email-style, email-title"></p>
@@ -198,7 +198,7 @@ The `:` prefix enables intelligent type parsing for attribute values. By default
 
 **Template Definition:**
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div class="main-user-card">
         <h2 data-bind="name" id-pointer="name-id"></h2>
         <p data-bind="email" id-pointer="email-id"></p>
@@ -277,7 +277,7 @@ The `o-if` attribute enables conditional rendering of elements based on boolean 
 
 **Template Definition:**
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div class="main-user-card">
         <h2 data-bind="name" id-pointer="name-id"></h2>
         <p data-bind="email" id-pointer="email-id"></p>
@@ -366,7 +366,7 @@ o-for="itemName in arrayAttributeName"
 
 **Template Definition:**
 ```html
-<template id="user-list" data-use-shadow="false">
+<template name-tag="user-list" data-use-shadow="false">
     <ul>
         <li o-for="user in users">
             <h3 data-bind="user.name"></h3>
@@ -395,7 +395,7 @@ o-for="itemName in arrayAttributeName"
 #### Advanced Example:
 
 ```html
-<template id="product-list" data-use-shadow="false">
+<template name-tag="product-list" data-use-shadow="false">
     <div class="products">
         <article o-for="product in items" class-pointer="product.category">
             <h4 data-bind="product.name"></h4>
@@ -590,7 +590,7 @@ Using `name-bind` as a atribute for `<slot>` element, it is possible to add cont
 #### Usage:
 
 ```html
-<template id="user-card">
+<template name-tag="user-card">
     <div>
         <header><slot name-bind="header"></slot></header>
         <section><slot name-bind="main"></slot></section>
@@ -633,7 +633,7 @@ The `model-link` attribute enables two-way data binding on input elements, synch
 
 **Template Definition:**
 ```html
-<template id="search-box">
+<template name-tag="search-box">
     <div>
         <input model-link="query" placeholder="Search..."/>
         <p>Search for: <strong data-bind="query"></strong></p>
@@ -656,7 +656,7 @@ The `model-link` attribute enables two-way data binding on input elements, synch
 
 **Template Definition:**
 ```html
-<template id="contact-form" data-use-shadow="false">
+<template name-tag="contact-form" data-use-shadow="false">
     <form>
         <div>
             <label>Name:</label>

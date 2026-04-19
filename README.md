@@ -32,7 +32,7 @@ On your HTML file, import code source:
 
 Define a `<template>` in your HTML:
 ```html
-<template id="user-card">
+<template name-tag="user-card">
   <div>
     <h1 data-bind="name"></h1>
     <p data-bind="email"></p>
@@ -52,7 +52,7 @@ Use the custom tag in your HTML:
 Synchronize input values with component state automatically:
 
 ```html
-<template id="search-input">
+<template name-tag="search-input">
   <div>
     <input model-link="query" placeholder="Search..."/>
     <p>You searched for: <strong data-bind="query"></strong></p>
@@ -69,7 +69,7 @@ Typing in the input updates both the component attribute and the display in real
 ### Conditional Rendering
 
 ```html
-<template id="logged-card">
+<template name-tag="logged-card">
   <h3 o-if="isLogged"></h3>                               
   <p show-switch="showDetails"></p>                      
 </template>
@@ -86,7 +86,7 @@ Typing in the input updates both the component attribute and the display in real
 ### Loop Rendering 
 
 ```html
-<template id="user-list" data-use-shadow="false">
+<template name-tag="user-list" data-use-shadow="false">
   <ul>
     <li o-for="user in users" class="user-item" id="user.id">
       <h3 data-bind="user.name"></h3>
@@ -126,7 +126,7 @@ Attach events declaratively for cleaner HTML components.
 ### Slot Usage for Flexible Content:
 
 ```html
-<template id="generic-triple">
+<template name-tag="generic-triple">
   <div><div><div>
     <slot></slot>
   </div></div></div>
@@ -152,7 +152,7 @@ Named slots enable advanced component composition:
 ### Dynamic Assignment with pointers
 
 ```html
-<template id="user-list" data-use-shadow="false">
+<template name-tag="user-list" data-use-shadow="false">
   <ul o-if="active">
     <li o-for="user in users" class="user-item" id="user.id">
       <h3 data-bind="user.name" class-pointer="user-name" attr-pointer="user.styling"></h3>

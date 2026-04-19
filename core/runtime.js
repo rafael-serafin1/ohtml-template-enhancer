@@ -62,7 +62,7 @@ function getTemplateObservedAttributes(template) {
     });
     /**
      * ? o-when event directive for attaching event listeners to the component (e.g., o-when:click="handleClick")
-     * * o-when attributes are detected on the component element itself, not in templates
+     * ! o-when attributes are detected on the component element itself, not in templates
      */  
 
     /**
@@ -89,7 +89,7 @@ function getTemplateObservedAttributes(template) {
 }
 
 function registerTemplateComponents() {
-    document.querySelectorAll('template[id]').forEach((template) => {
+    document.querySelectorAll('template[name-tag]').forEach((template) => {
         const name = template.id.trim();
         if (!name || !name.includes('-')) return;
         if (customElements.get(name)) return;
