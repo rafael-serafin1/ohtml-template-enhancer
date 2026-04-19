@@ -1,6 +1,7 @@
 import "./define.js";
 import { defineComponent } from "./libcore.js";
 import { getCleanAttributeNames } from "./parsing.js";
+import { nameIsOK } from "./verify.js"
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
@@ -90,15 +91,16 @@ function getTemplateObservedAttributes(template) {
 
 function registerTemplateComponents() {
     document.querySelectorAll('template[name-tag]').forEach((template) => {
-        const name = template.id.trim();
-        if (!name || !name.includes('-')) return;
+        const name = template.getAttribute("name-tag")?.trim();
+        const templateId = template.id.trim();
+        if (!nameIsOK(name, templateId)) return;
         if (customElements.get(name)) return;
 
         const observedAttributes = getTemplateObservedAttributes(template);
         const useShadow = template.dataset.useShadow !== 'false';
 
         defineComponent(name, {
-            templateId: name,
+            templateId,
             observedAttributes,
             useShadow
         });

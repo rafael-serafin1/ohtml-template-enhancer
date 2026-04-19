@@ -16,10 +16,9 @@ export function parseAttribute(attrName, attrValue) {
     const isPrefixed = attrName.startsWith(':');
     const name = isPrefixed ? attrName.slice(1) : attrName;
     
-    if (!isPrefixed) {
+    if (!isPrefixed) 
         // No prefix: return as string
         return { name, value: attrValue, isParsed: false };
-    }
     
     // Has prefix: parse as JSON
     try {

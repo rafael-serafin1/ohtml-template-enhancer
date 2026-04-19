@@ -7,8 +7,7 @@ import { defineComponent } from "./libcore.js";
  * @param {*} options 
  */
 export function define(name, templateId, options = {}) {
-    if (!name || typeof name !== 'string') throw new Error('Must be a valid string as component name');
-    if (!name.includes('-')) throw new Error(`Hyphen is required at tag's name`);
+    if (!verifyName(name) || !verifyValid(name)) return;
 
     if (!templateId) templateId = name;
     defineComponent(name, { templateId, ...options });

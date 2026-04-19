@@ -115,11 +115,10 @@ export function defineComponent(name, options) {
                 const prefixedAttr = `:${attr}`;
                 let rawValue;
                 
-                if (this.hasAttribute(prefixedAttr)) {
+                if (this.hasAttribute(prefixedAttr)) 
                     rawValue = this.getAttribute(prefixedAttr);
-                } else {
+                else 
                     rawValue = this.getAttribute(attr);
-                }
                 
                 if (rawValue === null) return;
                 
@@ -182,9 +181,7 @@ export function defineComponent(name, options) {
                 });
                 
                 // Get or create a data object on the component to store parsed values
-                if (!this._componentData) {
-                    this._componentData = {};
-                }
+                if (!this._componentData) this._componentData = {};
                 this._componentData[attr] = parsedValue;
             });
 
@@ -219,11 +216,10 @@ export function defineComponent(name, options) {
                     const prefixedName = `:${pointerName}`;
                     let rawValue;
                     
-                    if (this.hasAttribute(prefixedName)) {
+                    if (this.hasAttribute(prefixedName)) 
                         rawValue = this.getAttribute(prefixedName);
-                    } else {
+                    else 
                         rawValue = this.getAttribute(pointerName);
-                    }
                     
                     if (rawValue === null) return;
                     
@@ -239,15 +235,14 @@ export function defineComponent(name, options) {
                     const attrName = parts[parts.length - 1]; // Get the last part
                     
                     // Apply the attribute based on its type
-                    if (attrName === 'style' && typeof parsedValue === 'string') {
+                    if (attrName === 'style' && typeof parsedValue === 'string') 
                         el.style.cssText = parsedValue;
-                    } else if (attrName === 'class' && typeof parsedValue === 'string') {
+                    else if (attrName === 'class' && typeof parsedValue === 'string') 
                         el.className = parsedValue;
-                    } else if (attrName === 'id' && typeof parsedValue === 'string') {
+                    else if (attrName === 'id' && typeof parsedValue === 'string') 
                         el.id = parsedValue;
-                    } else {
+                    else 
                         el.setAttribute(attrName, String(parsedValue));
-                    }
                 });
             });
         }
@@ -266,16 +261,13 @@ export function defineComponent(name, options) {
                 const prefixedName = `:${pointerName}`;
                 let rawValue;
                 
-                if (this.hasAttribute(prefixedName)) {
+                if (this.hasAttribute(prefixedName))
                     rawValue = this.getAttribute(prefixedName);
-                } else {
+                else
                     rawValue = this.getAttribute(pointerName);
-                }
                 
                 // If no explicit value, use the pointer name as the slot name (literal value)
-                if (rawValue === null) {
-                    rawValue = pointerName;
-                }
+                if (rawValue === null) rawValue = pointerName;
                 
                 // Parse the value if prefixed
                 const { value: parsedValue } = parseAttribute(
@@ -311,11 +303,10 @@ export function defineComponent(name, options) {
                 const prefixedName = `:${propName}`;
                 let rawValue;
                 
-                if (this.hasAttribute(prefixedName)) {
+                if (this.hasAttribute(prefixedName))
                     rawValue = this.getAttribute(prefixedName);
-                } else {
+                else
                     rawValue = this.getAttribute(propName);
-                }
 
                 // Initialize input value from component attribute
                 if (rawValue !== null) {
@@ -356,11 +347,10 @@ export function defineComponent(name, options) {
                 const prefixedAttr = `:${arrayName}`;
                 let rawValue;
                 
-                if (this.hasAttribute(prefixedAttr)) {
+                if (this.hasAttribute(prefixedAttr)) 
                     rawValue = this.getAttribute(prefixedAttr);
-                } else {
+                else 
                     rawValue = this.getAttribute(arrayName);
-                }
                 
                 if (!rawValue) return;
 
@@ -427,9 +417,7 @@ export function defineComponent(name, options) {
                 if (classPointerAttr && classPointerAttr.startsWith(itemName + '.')) {
                     const property = classPointerAttr.substring((itemName + '.').length);
                     const value = this._getNestedProperty(itemData, property);
-                    if (value) {
-                        el.className = String(value);
-                    }
+                    if (value) el.className = String(value);
                 }
 
                 // Process id-pointer attributes
@@ -437,9 +425,7 @@ export function defineComponent(name, options) {
                 if (idPointerAttr && idPointerAttr.startsWith(itemName + '.')) {
                     const property = idPointerAttr.substring((itemName + '.').length);
                     const value = this._getNestedProperty(itemData, property);
-                    if (value) {
-                        el.id = String(value);
-                    }
+                    if (value) el.id = String(value);
                 }
 
                 // Process attr-pointer attributes
@@ -458,15 +444,14 @@ export function defineComponent(name, options) {
                                 const parts = pointerName.split('-');
                                 const attrName = parts[parts.length - 1];
                                 
-                                if (attrName === 'style' && typeof value === 'string') {
+                                if (attrName === 'style' && typeof value === 'string')
                                     el.style.cssText = value;
-                                } else if (attrName === 'class' && typeof value === 'string') {
+                                else if (attrName === 'class' && typeof value === 'string')
                                     el.className = value;
-                                } else if (attrName === 'id' && typeof value === 'string') {
+                                else if (attrName === 'id' && typeof value === 'string')
                                     el.id = value;
-                                } else {
+                                else
                                     el.setAttribute(attrName, String(value));
-                                }
                             }
                         }
                     });
