@@ -73,6 +73,12 @@ export function defineComponent(name, options) {
                 }
             });
 
+            root.querySelectorAll(`[attr-define="${attrName}"]`).forEach(el => {
+                if (parsedValue) {
+                    el.setAttribute(attrName, String(parsedValue));
+                }
+            });
+
             // Update internal component data
             if (!this._componentData) {
                 this._componentData = {};
@@ -148,6 +154,13 @@ export function defineComponent(name, options) {
                     }
                 });
                 
+                // Apply attr-define attributes
+                root.querySelectorAll(`[attr-define="${attr}"]`).forEach(el => {
+                    if (parsedValue) {
+                        el.setAttribute(`${attr}`, `${String(parsedValue)}`);
+                    }
+                });
+
                 // Apply o-if conditional rendering
                 root.querySelectorAll(`[o-if="${attr}"]`).forEach(el => {
                     // Validate that the value is a boolean
@@ -188,6 +201,9 @@ export function defineComponent(name, options) {
             // handle attr-pointer attributes dynamically
             this._applyAttrPointers(root);
 
+            // handle attr-define new tag's attribute
+            this._applyAttrDefines(root);
+
             // handle name-bind attributes for slots
             this._applyNameBindings(root);
 
@@ -196,6 +212,38 @@ export function defineComponent(name, options) {
 
             // setup event listeners
             this._setupEventListeners();
+        }
+
+        /**
+         * 
+         */
+        _applyAttrDefines(root) {
+            root.querySelectorAll('[attr-define]').forEach(el => {
+                const definesList = el.getAttribute('attr-define');
+                if (!definesList) return;
+
+                const defines = definesList.split(",").map(s => s.trim());
+                defines.forEach(define => {
+                    const defined = `:${define}`;
+                    let rawValue;
+
+                    if (this.hasAttribute(defined)) rawValue = this.getAttribute(defined);
+                    else rawValue = this.getAttribute(define);
+
+                    if (rawValue == null) return;
+
+                    const {value: parsedValue} = parseAttribute(
+                        this.hasAttribute(defined) ? defined : define,
+                        rawValue
+                    );
+
+                    const newAttr = define;
+                    if (typeof parsedValue === "string") {
+                        el.setAttribute(`${newAttr}`, `${rawValue}`); 
+                    } else 
+                        el.setAttribute(`${newAttr}`, `${String(rawValue)}`);
+                });
+            });
         }
 
         /**
@@ -456,13 +504,33 @@ export function defineComponent(name, options) {
                         }
                     });
                 }
+
+                // process attr-define attributes
+                const attrDefineAttr = el.getAttribute('attr-define');
+                if (attrDefineAttr) {
+                    const attrs = attrDefineAttr.split(',').map(s => s.trim());
+
+                    attrs.forEach(attr => {
+                        if (attr.startsWith('.')) {
+                            const property = attr.substring((itemName + '.').length)
+                            const value = this._getNestedProperty(itemData, property);
+
+                            if (value) {
+                                const parts = attr.split('-');
+                                const attrName = parts[parts.length - 1];
+        
+                                el.setAttribute(attrName, String(value));
+                            }
+                        }
+                    });
+                }
             };
 
             // Process the element itself
             processElement(element);
             
             // Process all child elements
-            element.querySelectorAll('[data-bind], [class-pointer], [id-pointer], [attr-pointer]').forEach(el => {
+            element.querySelectorAll('[data-bind], [class-pointer], [id-pointer], [attr-pointer], [attr-define]').forEach(el => {
                 processElement(el);
             });
         }
@@ -506,8 +574,7 @@ export function defineComponent(name, options) {
                 }
             });
         }
-
     }
-
+    
     customElements.define(name, Component);
 }

@@ -79,6 +79,11 @@ function getTemplateObservedAttributes(template) {
             binds.add(arrayName); // Also add the array name to observe it
         }
     });
+
+    template.content.querySelectorAll('[attr-define]').forEach((el) => {
+        const attr = el.getAttribute('attr-define');
+        if (attr) binds.add(attr);
+    })
     
     /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
@@ -114,7 +119,6 @@ if (document.readyState === 'loading') {
     registerTemplateComponents();
 }
 
-window.registerTemplateComponents = registerTemplateComponents;
-
 // define new elements
 customElements.define("templates-import", TemplatesImport);
+window.registerTemplateComponents = registerTemplateComponents;
