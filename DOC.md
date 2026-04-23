@@ -69,11 +69,11 @@ Or u can just use `<slot>` if it's simple like this:
 
 ### Nested templates by using `<templates-define>`
 
-oHTML new tag called `<templates-define>` can be used to create nested templates. Tags created by templates inside `<templates-define>` wont be usable outside definer tag.
+oHTML new tag called `<templates-define>` can be used to create a scope so you can nest templates. Tags created by templates inside `<templates-define>` wont be usable outside definer tag.
 
 For an example:
 ```html
-<templates-define name-tag="parent-definer">
+<templates-define scope-name="parent-definer">
     <template name-tag="x-user">
         <span><slot></slot></span>
     </template>
