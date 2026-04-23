@@ -1,5 +1,7 @@
 import { BaseComponent } from "./base.js";
+import { getScopedTemplate } from "./newtags.js";
 import { parseAttribute } from "./parsing.js";
+import { scopedTemplates } from "./newtags.js";
 
 export function defineComponent(name, options) {
     if (!name.includes("-")) throw new Error("Hyphen is required at tag's name");
@@ -90,6 +92,20 @@ export function defineComponent(name, options) {
             // searchs for template by using custom attribute `name-tag`
             const template = document.querySelector(`template[name-tag="${name}"]`);
 
+            const definesList = template.getAttribute("attr-define");
+
+            if (definesList) {
+                const defines = definesList.split(",").map(s => s.trim());
+                defines.forEach(attr => {
+                    // if already has this attribute
+                    if (this.hasAttribute(attr)) return;
+                    if (this.hasAttribute(`:${attr}`)) return;
+
+                    // define as empty by default
+                    this.setAttribute(attr, "");
+                });
+            }
+
             // clone template's content
             const content = template.content.cloneNode(true);
 
@@ -105,6 +121,7 @@ export function defineComponent(name, options) {
                 this.innerHTML = "";
                 this.appendChild(content);
                 this.applyAttributes(this);
+                this._processScopedComponents(this);
             }
         }
 
@@ -572,6 +589,37 @@ export function defineComponent(name, options) {
                     // Add event listener to the component element
                     this.addEventListener(eventName, boundHandler);
                 }
+            });
+        }
+
+        _processScopedComponents(root) {
+            const parentTag = this.tagName.toLowerCase();
+            const scope = scopedTemplates.get(parentTag);
+            if (!scope) return;
+
+            scope.forEach((template, childTag) => {
+                const nodes = Array.from(root.querySelectorAll(childTag));
+
+                nodes.forEach(node => {
+                    if (node.__scopedProcessed) return;
+
+                    const fragment = template.content.cloneNode(true);
+                    const children = Array.from(fragment.children);
+
+                    children.forEach(child => {
+                        Array.from(node.attributes).forEach(attr => {
+                            child.setAttribute(attr.name, attr.value);
+                        });
+                    });
+
+                    if (node.childNodes.length > 0 && children.length > 0) {
+                        children[0].append(...node.childNodes);
+                    }
+
+                    node.__scopedProcessed = true;
+                    node.replaceWith(fragment);
+                    this._processScopedComponents(root);
+                });
             });
         }
     }

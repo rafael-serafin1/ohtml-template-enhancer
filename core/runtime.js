@@ -1,8 +1,12 @@
 import "./define.js";
 import { defineComponent } from "./libcore.js";
-import { TemplatesImport } from "./newtags.js";
+import { TemplatesDefine, TemplatesImport } from "./newtags.js";
 import { getCleanAttributeNames } from "./parsing.js";
 import { nameIsOK } from "./verify.js";
+
+// define new elements
+customElements.define("templates-import", TemplatesImport);
+customElements.define("templates-define", TemplatesDefine);
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
@@ -119,6 +123,4 @@ if (document.readyState === 'loading') {
     registerTemplateComponents();
 }
 
-// define new elements
-customElements.define("templates-import", TemplatesImport);
 window.registerTemplateComponents = registerTemplateComponents;
