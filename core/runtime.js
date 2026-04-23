@@ -1,8 +1,12 @@
 import "./define.js";
 import { defineComponent } from "./libcore.js";
-import { TemplatesImport } from "./newtags.js";
+import { TemplatesDefine, TemplatesImport } from "./newtags.js";
 import { getCleanAttributeNames } from "./parsing.js";
 import { nameIsOK } from "./verify.js";
+
+// define new elements
+customElements.define("templates-import", TemplatesImport);
+customElements.define("templates-define", TemplatesDefine);
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
@@ -79,6 +83,11 @@ function getTemplateObservedAttributes(template) {
             binds.add(arrayName); // Also add the array name to observe it
         }
     });
+
+    template.content.querySelectorAll('[attr-define]').forEach((el) => {
+        const attr = el.getAttribute('attr-define');
+        if (attr) binds.add(attr);
+    })
     
     /**
      * ? other bindings can be added here in the future, just remember to add them in the component's render method as well
@@ -115,6 +124,3 @@ if (document.readyState === 'loading') {
 }
 
 window.registerTemplateComponents = registerTemplateComponents;
-
-// define new elements
-customElements.define("templates-import", TemplatesImport);

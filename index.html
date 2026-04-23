@@ -15,7 +15,7 @@
         <script type="module" src="core/runtime.js"></script>
 
         <!-- importing templates from another HTML file -->
-        <templates-import src="./templates.html"></templates-import>
+        <templates-import src="./templates.html" />
 
         <!-- Global handler functions for o-when events -->
         <script>
@@ -146,5 +146,9 @@
             ]'></user-list>
         </div>
 
+        <if-statement cond="a != b"></if-statement>
+        <parent-definer>
+            <x-user>Olá</x-user>
+        </parent-definer>
     </body>
 </html>

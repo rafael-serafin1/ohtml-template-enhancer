@@ -39,3 +39,41 @@ export class TemplatesImport extends HTMLElement {
     }
   }
 }
+
+export const scopedTemplates = new Map();
+export class TemplatesDefine extends HTMLElement {
+    connectedCallback() {
+        const parentTag = this.getAttribute("name-tag");
+
+        if (!parentTag || !parentTag.includes("-"))
+            throw new Error("[oHTML] name-tag invalid or inexistent.");
+
+        // map scope
+        if (!scopedTemplates.has(parentTag)) 
+            scopedTemplates.set(parentTag, new Map());
+
+        const scopeMap = scopedTemplates.get(parentTag);
+
+        // colect child templates
+        const templates = this.querySelectorAll("template[name-tag]");
+
+        templates.forEach(template => {
+            const tagName = template.getAttribute("name-tag");
+
+            if (!tagName || !tagName.includes("-")) {
+                console.warn(`[oHTML] ignoring invalid template: ${tagName}`);
+                return;
+            }
+
+            if (scopeMap.has(tagName)) 
+                console.warn(`[oHTML] <templates-define> overriding "${tagName}" to "${parentTag}"`);
+            scopeMap.set(tagName, template);
+        });
+        this.remove();
+    }
+}
+
+// ignore this
+export function getScopedTemplate(parentTag, childTag) {
+    return scopedTemplates.get(parentTag)?.get(childTag) || null;
+}

@@ -15,6 +15,20 @@ This is a basic custom tag that creates a horizontal line on your application.
 
 ---
 
+### Importing templates
+
+`<templates-import>` is a oHTML special element that brings external templates to another .html file.
+
+```html
+<templates-import src="./templates.html"></templates-import>
+
+<!-- OR -->
+
+<templates-import src="./templates.html" />
+```
+
+---
+
 ### Mutable content
 
 Using the special `data-bind` attribute, it's possible to shape the content of child elements during the declaration of the custom tag.
@@ -32,6 +46,49 @@ On `<template>`
 On usage:
 ```html 
 <user-card name="Daniel Dias" email="danieldias@email.com"></user-card>
+```
+
+Or u can just use `<slot>` if it's simple like this:
+```html
+<template name-tag="triple-div">
+    <div>
+        <div>
+            <div>
+                <slot></slot>
+            </div>
+        </div>
+    </div>
+</template>
+
+<triple-div>
+    Hi! I'm encapsulated in three div's!
+</triple-div>
+```
+
+---
+
+### Nested templates by using `<templates-define>`
+
+oHTML new tag called `<templates-define>` can be used to create nested templates. Tags created by templates inside `<templates-define>` wont be usable outside definer tag.
+
+For an example:
+```html
+<templates-define name-tag="parent-definer">
+    <template name-tag="x-user">
+        <span><slot></slot></span>
+    </template>
+    <template name-tag="x-mail">
+        <i><slot></slot></i>
+    </template>
+</templates-define>
+```
+
+Usage:
+```html
+<parent-definer>
+    <x-user>CoolDude6768</x-user>
+    <x-mail>cooldude6768.9@email.com</x-mail>
+</parent-definer>
 ```
 
 ---

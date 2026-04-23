@@ -1,5 +1,7 @@
 import { BaseComponent } from "./base.js";
+import { getScopedTemplate } from "./newtags.js";
 import { parseAttribute } from "./parsing.js";
+import { scopedTemplates } from "./newtags.js";
 
 export function defineComponent(name, options) {
     if (!name.includes("-")) throw new Error("Hyphen is required at tag's name");
@@ -73,6 +75,12 @@ export function defineComponent(name, options) {
                 }
             });
 
+            root.querySelectorAll(`[attr-define="${attrName}"]`).forEach(el => {
+                if (parsedValue) {
+                    el.setAttribute(attrName, String(parsedValue));
+                }
+            });
+
             // Update internal component data
             if (!this._componentData) {
                 this._componentData = {};
@@ -83,6 +91,20 @@ export function defineComponent(name, options) {
         render() {
             // searchs for template by using custom attribute `name-tag`
             const template = document.querySelector(`template[name-tag="${name}"]`);
+
+            const definesList = template.getAttribute("attr-define");
+
+            if (definesList) {
+                const defines = definesList.split(",").map(s => s.trim());
+                defines.forEach(attr => {
+                    // if already has this attribute
+                    if (this.hasAttribute(attr)) return;
+                    if (this.hasAttribute(`:${attr}`)) return;
+
+                    // define as empty by default
+                    this.setAttribute(attr, "");
+                });
+            }
 
             // clone template's content
             const content = template.content.cloneNode(true);
@@ -99,6 +121,7 @@ export function defineComponent(name, options) {
                 this.innerHTML = "";
                 this.appendChild(content);
                 this.applyAttributes(this);
+                this._processScopedComponents(this);
             }
         }
 
@@ -148,6 +171,13 @@ export function defineComponent(name, options) {
                     }
                 });
                 
+                // Apply attr-define attributes
+                root.querySelectorAll(`[attr-define="${attr}"]`).forEach(el => {
+                    if (parsedValue) {
+                        el.setAttribute(`${attr}`, `${String(parsedValue)}`);
+                    }
+                });
+
                 // Apply o-if conditional rendering
                 root.querySelectorAll(`[o-if="${attr}"]`).forEach(el => {
                     // Validate that the value is a boolean
@@ -188,6 +218,9 @@ export function defineComponent(name, options) {
             // handle attr-pointer attributes dynamically
             this._applyAttrPointers(root);
 
+            // handle attr-define new tag's attribute
+            this._applyAttrDefines(root);
+
             // handle name-bind attributes for slots
             this._applyNameBindings(root);
 
@@ -196,6 +229,38 @@ export function defineComponent(name, options) {
 
             // setup event listeners
             this._setupEventListeners();
+        }
+
+        /**
+         * 
+         */
+        _applyAttrDefines(root) {
+            root.querySelectorAll('[attr-define]').forEach(el => {
+                const definesList = el.getAttribute('attr-define');
+                if (!definesList) return;
+
+                const defines = definesList.split(",").map(s => s.trim());
+                defines.forEach(define => {
+                    const defined = `:${define}`;
+                    let rawValue;
+
+                    if (this.hasAttribute(defined)) rawValue = this.getAttribute(defined);
+                    else rawValue = this.getAttribute(define);
+
+                    if (rawValue == null) return;
+
+                    const {value: parsedValue} = parseAttribute(
+                        this.hasAttribute(defined) ? defined : define,
+                        rawValue
+                    );
+
+                    const newAttr = define;
+                    if (typeof parsedValue === "string") {
+                        el.setAttribute(`${newAttr}`, `${rawValue}`); 
+                    } else 
+                        el.setAttribute(`${newAttr}`, `${String(rawValue)}`);
+                });
+            });
         }
 
         /**
@@ -456,13 +521,33 @@ export function defineComponent(name, options) {
                         }
                     });
                 }
+
+                // process attr-define attributes
+                const attrDefineAttr = el.getAttribute('attr-define');
+                if (attrDefineAttr) {
+                    const attrs = attrDefineAttr.split(',').map(s => s.trim());
+
+                    attrs.forEach(attr => {
+                        if (attr.startsWith('.')) {
+                            const property = attr.substring((itemName + '.').length)
+                            const value = this._getNestedProperty(itemData, property);
+
+                            if (value) {
+                                const parts = attr.split('-');
+                                const attrName = parts[parts.length - 1];
+        
+                                el.setAttribute(attrName, String(value));
+                            }
+                        }
+                    });
+                }
             };
 
             // Process the element itself
             processElement(element);
             
             // Process all child elements
-            element.querySelectorAll('[data-bind], [class-pointer], [id-pointer], [attr-pointer]').forEach(el => {
+            element.querySelectorAll('[data-bind], [class-pointer], [id-pointer], [attr-pointer], [attr-define]').forEach(el => {
                 processElement(el);
             });
         }
@@ -507,7 +592,37 @@ export function defineComponent(name, options) {
             });
         }
 
-    }
+        _processScopedComponents(root) {
+            const parentTag = this.tagName.toLowerCase();
+            const scope = scopedTemplates.get(parentTag);
+            if (!scope) return;
 
+            scope.forEach((template, childTag) => {
+                const nodes = Array.from(root.querySelectorAll(childTag));
+
+                nodes.forEach(node => {
+                    if (node.__scopedProcessed) return;
+
+                    const fragment = template.content.cloneNode(true);
+                    const children = Array.from(fragment.children);
+
+                    children.forEach(child => {
+                        Array.from(node.attributes).forEach(attr => {
+                            child.setAttribute(attr.name, attr.value);
+                        });
+                    });
+
+                    if (node.childNodes.length > 0 && children.length > 0) {
+                        children[0].append(...node.childNodes);
+                    }
+
+                    node.__scopedProcessed = true;
+                    node.replaceWith(fragment);
+                    this._processScopedComponents(root);
+                });
+            });
+        }
+    }
+    
     customElements.define(name, Component);
 }
