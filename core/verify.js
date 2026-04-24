@@ -17,7 +17,8 @@ export function nameIsOK(name, templateId) {
 /**
  * 
  * @param {*} attr - attribute
- * @returns 
+ * @returns all values inside parameter
+ * @var {*} values possible values ["src"...]
  */
 export function attrDefineValues(attr) {
     /**

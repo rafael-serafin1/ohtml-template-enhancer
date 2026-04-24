@@ -92,18 +92,48 @@ export function defineComponent(name, options) {
             // searchs for template by using custom attribute `name-tag`
             const template = document.querySelector(`template[name-tag="${name}"]`);
 
+            const usageFnName = template.getAttribute("attr-usage");
             const definesList = template.getAttribute("attr-define");
 
-            if (definesList) {
-                const defines = definesList.split(",").map(s => s.trim());
-                defines.forEach(attr => {
-                    // if already has this attribute
-                    if (this.hasAttribute(attr)) return;
-                    if (this.hasAttribute(`:${attr}`)) return;
+            if (usageFnName && definesList) {
+                const usageFn = window[usageFnName];
 
-                    // define as empty by default
-                    this.setAttribute(attr, "");
-                });
+                if (typeof usageFn !== "function")
+                    console.error(`[oHTML] Error function "${usageFnName}" not found in scope.`);
+                else {
+                    const attrs = definesList.split(",").map(s => s.trim());
+
+                    attrs.forEach(attr => {
+                        const prefixed = `:${attr}`;
+                        let rawValue;
+
+                        if (this.hasAttribute(prefixed)) {
+                            rawValue = this.getAttribute(prefixed);
+                        } else {
+                            rawValue = this.getAttribute(attr);
+                        }
+
+                        if (rawValue == null) return;
+
+                        const { value } = parseAttribute(
+                            this.hasAttribute(prefixed) ? prefixed : attr,
+                            rawValue
+                        );
+
+                        // Aqui você executa o comportamento definido no template
+                        const result = usageFn.call(this, value, this, template);
+
+                        // Você decide o que fazer com o resultado
+                        // Exemplo simples: esconder ou mostrar
+                        if (typeof result === "boolean") {
+                            if (!result) {
+                                this.style.display = "none";
+                            } else {
+                                this.style.display = "";
+                            }
+                        }
+                    });
+                }
             }
 
             // clone template's content
@@ -173,9 +203,10 @@ export function defineComponent(name, options) {
                 
                 // Apply attr-define attributes
                 root.querySelectorAll(`[attr-define="${attr}"]`).forEach(el => {
-                    if (parsedValue) {
-                        el.setAttribute(`${attr}`, `${String(parsedValue)}`);
-                    }
+                    if (parsedValue !== undefined && parsedValue !== null)
+                        el.setAttribute(attr, String(parsedValue));
+                    else
+                        el.setAttribute(attr, String(rawValue));
                 });
 
                 // Apply o-if conditional rendering
@@ -232,7 +263,7 @@ export function defineComponent(name, options) {
         }
 
         /**
-         * 
+         * ? defines a new attribute for a element
          */
         _applyAttrDefines(root) {
             root.querySelectorAll('[attr-define]').forEach(el => {
@@ -256,9 +287,9 @@ export function defineComponent(name, options) {
 
                     const newAttr = define;
                     if (typeof parsedValue === "string") {
-                        el.setAttribute(`${newAttr}`, `${rawValue}`); 
+                        root.setAttribute(`${newAttr}`, `${rawValue}`); 
                     } else 
-                        el.setAttribute(`${newAttr}`, `${String(rawValue)}`);
+                        root.setAttribute(`${newAttr}`, `${String(rawValue)}`);
                 });
             });
         }
@@ -565,7 +596,7 @@ export function defineComponent(name, options) {
          * Supported events: click, dblclick, change, input
          */
         _setupEventListeners() {
-            const supportedEvents = ['click', 'dblclick', 'change', 'input'];
+            const supportedEvents = ['click', 'dblclick', 'change', 'input', 'select'];
             
             supportedEvents.forEach(eventName => {
                 const attrName = `o-when:${eventName}`;

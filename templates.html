@@ -50,13 +50,16 @@
         </div>
     </template>
 
-    <template name-tag="if-statement" attr-define="cond">
+    <template name-tag="if-statement" attr-define="condition" attr-usage="handleIfStatement">
         <slot></slot>
     </template>
 
     <templates-define scope-name="parent-definer">
         <template name-tag="x-user">
             <span><slot></slot></span>
+        </template>
+        <template name-tag="x-mail">
+            <i><slot></slot></i>
         </template>
     </templates-define>
 </body>

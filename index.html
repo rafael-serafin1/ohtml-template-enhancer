@@ -27,9 +27,13 @@
             window.handleCardDblClick = function() {
                 console.log('User card double-clicked!');
             };
-
+            
             window.handleListItemClick = function() {
                 console.log('List item clicked!');
+            };
+
+            window.handleIfStatement = function() {
+                console.log('Hello');
             };
         </script>
 
@@ -38,7 +42,7 @@
         <!-- data-bind content will replace with bound data -->
         <!-- class-pointer allows dynamic class assignment from component attributes -->
         <!-- data-use-shadow="false" is needed for external CSS classes to work -->
-        <template name-tag="user-card" id="user-card" data-use-shadow="false">
+        <template name-tag="user-card" data-use-shadow="false">
             <div class="main-user-card">
                 <h1 data-bind="name" id-pointer="name-id" attr-pointer="name-style, name-title"></h1>
                 <p data-bind="email" id-pointer="email-id" attr-pointer="email-style, email-title"></p>
@@ -134,6 +138,8 @@
             </div>
         </main>
 
+        <if-statement :condition="'a' !== 'b'">Olá</if-statement>
+
         <!-- o-for usage example -->
         <div style="margin-top: 50px; padding: 20px; background: #f5f5f5;">
             <!-- Example: Object format for attr-pointer with o-for -->
@@ -145,10 +151,5 @@
                 {"name": "Maria Santos", "email": "maria@gmail.com", "styling": {"style": "color: #7c3aed; font-weight: bold;", "title": "QA Engineer"}}
             ]'></user-list>
         </div>
-
-        <if-statement cond="a != b"></if-statement>
-        <parent-definer>
-            <x-user>Olá</x-user>
-        </parent-definer>
     </body>
 </html>

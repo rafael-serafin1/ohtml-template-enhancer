@@ -23,7 +23,6 @@ export function parseAttribute(attrName, attrValue) {
     // Has prefix: parse as JSON
     try {
         const parsedValue = JSON.parse(attrValue);
-        console.info(name, parsedValue);
         return { name, value: parsedValue, isParsed: true };
     } catch (error) {
         console.warn(`Failed to parse attribute ":${name}" with value "${attrValue}". Treating as string.`, error);

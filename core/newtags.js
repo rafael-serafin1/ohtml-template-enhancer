@@ -1,3 +1,25 @@
+import { nameIsOK } from "./verify.js";
+
+export class NewTags {
+  /**
+   * ? Used to automatize custom elements definition on runtime
+   * @returns Array of objects containing "name" and "class" attributes 
+   */
+  listTags() {
+    const tags = [
+      {
+        name: "templates-import",
+        class: TemplatesImport
+      },
+      {
+        name: "templates-define",
+        class: TemplatesDefine
+      }
+    ]
+    return tags;
+  }
+}
+
 /**
  * ? Creates oHTML special element `<templates-import>` used to do not other thing than importing templates DUUH.
  */
@@ -21,9 +43,7 @@ export class TemplatesImport extends HTMLElement {
         const name = template.getAttribute("name-tag");
 
         // templates without `name-tag` are ignored
-        if (!name) {
-          return;
-        }
+        if (!name) return;
         
         // handling templates with same name
         if (document.querySelector(`template[name-tag="${name}"]`)) {
@@ -35,31 +55,34 @@ export class TemplatesImport extends HTMLElement {
       })
 
     } catch (err) {
-      console.error("Erro ao carregar templates:", err);
+      console.error("Error: ", err);
     }
   }
 }
 
+/**
+ * ? Class for `<templates-define>` custom tag
+ */
 export const scopedTemplates = new Map();
 export class TemplatesDefine extends HTMLElement {
-  connectedCallback() {
+  async connectedCallback() {
     const parentTag = this.getAttribute("scope-name");
-    if (!parentTag || !parentTag.includes("-"))
-        throw new Error("[oHTML] scope-name invalid or inexistent.");
+
+    if (!parentTag || !parentTag.includes("-")) throw new Error("[oHTML] scope-name invalid or inexistent.");
+
     // map scope
-    if (!scopedTemplates.has(parentTag)) 
-        scopedTemplates.set(parentTag, new Map());
+    if (!scopedTemplates.has(parentTag)) scopedTemplates.set(parentTag, new Map());
+
     const scopeMap = scopedTemplates.get(parentTag);
+
     // colect child templates
     const templates = this.querySelectorAll("template[name-tag]");
     templates.forEach(template => {
         const tagName = template.getAttribute("name-tag");
-        if (!tagName || !tagName.includes("-")) {
-            console.warn(`[oHTML] ignoring invalid template: ${tagName}`);
-            return;
-        }
-        if (scopeMap.has(tagName)) 
-            console.warn(`[oHTML] <templates-define> overriding "${tagName}" to "${parentTag}"`);
+        if (!nameIsOK(template)) return;
+
+        if (scopeMap.has(tagName)) console.warn(`[oHTML] <templates-define> overriding "${tagName}" to "${parentTag}"`);
+
         scopeMap.set(tagName, template);
     });
     this.remove();
@@ -67,6 +90,4 @@ export class TemplatesDefine extends HTMLElement {
 }
 
 // ignore this
-export function getScopedTemplate(parentTag, childTag) {
-    return scopedTemplates.get(parentTag)?.get(childTag) || null;
-}
+export const getScopedTemplate = (parentTag, childTag) => { return scopedTemplates.get(parentTag)?.get(childTag) || null; }

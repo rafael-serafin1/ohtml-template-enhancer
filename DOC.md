@@ -800,3 +800,28 @@ window.submitForm = function() {
     style="cursor: pointer;">
 </contact-form>
 ```
+
+### Defining attributes for custom elements
+
+By using `attr-define`, is possible to define a new attribute for custom tag.
+
+#### How it works:
+1. Add `attr-define` at `<template tag-name="tag-name">`
+2. Use `attr-usage` to define attributes
+3. Create a function inside scope to be used
+
+#### Syntax:
+
+```html
+<script>
+    window.handleIfStatement = function() {
+        ... // logic goes here
+    };
+</script>
+
+<template name-tag="if-statement" attr-define="contidion" attr-usage="handleIfStatement">
+    <slot></slot>
+</template>
+
+<if-statement :condition="'a' !== 'b'"></if-statement>
+```

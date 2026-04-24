@@ -1,12 +1,15 @@
 import "./define.js";
 import { defineComponent } from "./libcore.js";
-import { TemplatesDefine, TemplatesImport } from "./newtags.js";
+import { NewTags } from "./newtags.js";
 import { getCleanAttributeNames } from "./parsing.js";
 import { nameIsOK } from "./verify.js";
 
-// define new elements
-customElements.define("templates-import", TemplatesImport);
-customElements.define("templates-define", TemplatesDefine);
+// defines new custom tags from "./newtags.js"
+const tags = new NewTags();
+const list = tags.listTags();
+list.forEach(el => {
+    customElements.define(el.name, el.class);
+});
 
 function getTemplateObservedAttributes(template) {
     const binds = new Set();
@@ -101,26 +104,25 @@ function getTemplateObservedAttributes(template) {
 
 function registerTemplateComponents() {
     document.querySelectorAll('template[name-tag]').forEach((template) => {
+        
         const name = template.getAttribute("name-tag")?.trim();
         const templateId = template.id.trim();
         if (!nameIsOK(name, templateId)) return;
         if (customElements.get(name)) return;
-
+        
         const observedAttributes = getTemplateObservedAttributes(template);
         const useShadow = template.dataset.useShadow !== 'false';
-
-        defineComponent(name, {
-            templateId,
-            observedAttributes,
-            useShadow
-        });
+        
+        if (template.closest(`templates-define`) !== null)
+            console.info("Ignoring templates inside templates-define element");
+        else
+            defineComponent(name, {templateId, observedAttributes, useShadow});
     });
 }
 
-if (document.readyState === 'loading') {
+if (document.readyState === 'loading') 
     document.addEventListener('DOMContentLoaded', registerTemplateComponents);
-} else {
+else 
     registerTemplateComponents();
-}
 
 window.registerTemplateComponents = registerTemplateComponents;
